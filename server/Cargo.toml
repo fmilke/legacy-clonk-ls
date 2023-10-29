@@ -1,0 +1,18 @@
+[package]
+name = "legacy-clonk-ls"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+cc = "*"
+tokio = { version = "1.33.0", features = ["macros", "rt-multi-thread", "io-std"] }
+tower-lsp = "0.20.0"
+tree-sitter = "0.20.10"
+dashmap = "5.5.3"
+simplelog = "0.12.1"
+log = "0.4.20"
+
+[dependencies.tree-sitter-c4script]
+path = "../tree-sitter-c4script"

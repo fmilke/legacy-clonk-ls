@@ -1,0 +1,337 @@
+const idRe = /[_A-Z0-9]{4}/;
+
+/*
+TODO:
+- global->
+- maps
+- ["asd" | "sdf"] syntax at function start
+*/
+
+module.exports = grammar({
+    name: 'c4script',
+
+    extras: $ => [
+        $.comment,
+        /\s/,
+    ],
+
+    word: $ => $.identifier,
+
+    rules: {
+
+        source_file: $ => repeat($._definition),
+
+        _definition: $ => choice(
+            $.pragma_strict,
+            $.appendto,
+            $.function_definition,
+            $.var_definition,
+            $.include,
+            // TODO
+        ),
+
+        function_definition: $ => seq(
+            optional(field("visibility", $.visibility)),
+            'func',
+            field("name", $.identifier),
+            $.parameter_list,
+            field("block", $.block),
+        ),
+
+        var_assignment: $ => seq(
+            $.identifier,
+            optional(seq('=', $._expression)),
+        ),
+
+        var_definition: $ => seq(
+            $.var_scope,
+            $.var_assignment,
+            repeat(seq(',', $.var_assignment)),
+            ';',
+        ),
+
+        visibility: $ => choice(
+            'private',
+            'protected',
+            'public',
+            'global',
+        ),
+
+        parameter_list: $ => seq(
+            '(',
+            optional($.param),
+            repeat(seq(',', $.param)),
+            ')',
+        ),
+
+        param: $ => seq(
+            optional($.type),
+            $.identifier,
+        ),
+
+        pragma_strict: $ => choice(
+            '#strict',
+            '#strict 2',
+            '#strict 3',
+        ),
+
+        include: $ => seq(
+            '#include',
+            $.id,
+            ';',
+        ),
+
+        appendto: $ => seq(
+            '#appendto',
+            choice($.id, '*'),
+            optional($.nowarn),
+        ),
+
+        nowarn: $ => seq(
+            'nowarn',
+        ),
+
+        var_scope: $ => choice(
+            'var',
+            'local',
+            'static',
+        ),
+
+        type: $ => choice(
+            '&',
+            'int',
+            'bool',
+            'id',
+            'object',
+            'string',
+            'array',
+            'map',
+            'any',
+        ),
+
+        block: $ => seq(
+            '{',
+            repeat($._statement),
+            '}',
+        ),
+
+        _statement: $ => choice(
+            $.return_statement,
+            $.if_statement,
+            $.var_definition,
+            $.while_statement,
+            $.for_statement,
+            $.flow_control_statement,
+            $._expression_statement,
+            // TODO
+        ),
+
+        _expression_statement: $ => seq(
+            $._expression,
+            ';',
+        ),
+
+        for_statement: $ => prec.right(seq(
+            'for',
+            '(',
+            $._for_variations,
+            ')',
+            optional($._statement),
+        )),
+
+        _for_variations: $ => choice(
+            seq(
+                optional($._expression),
+                ';',
+                optional($._expression),
+                ';',
+                optional($._expression),
+            ),
+            seq(
+                'var',
+                $.identifier,
+                'in',
+                $._expression,
+            ),
+            seq(
+                'var',
+                $.identifier,
+                ',',
+                $.identifier,
+                'in',
+                $._expression,
+            ),
+        ),
+
+        while_statement: $ => prec.right(seq(
+            'while',
+            '(',
+            $._expression,
+            ')',
+            optional($._statement),
+        )),
+
+        return_statement: $ => seq(
+            'return',
+            '(',
+            optional($._expression),
+            ')',
+            ';',
+        ),
+
+        flow_control_statement: $ => choice(
+            seq('break', ';'),
+            seq('continue', ';'),
+        ),
+
+        if_statement: $ => prec.right(seq(
+            'if',
+            '(',
+            $._expression,
+            ')',
+            choice(
+                $._statement,
+                $.block,
+            ),
+            optional(seq(
+                'else',
+                choice(
+                    $._statement,
+                    $.block,
+                ),
+            )),
+        )),
+
+        _expression: $ => choice(
+            $.identifier,
+            $.bool,
+            $.nil,
+            $.number,
+            $.array,
+            $.string,
+            $.id,
+            $.unary_expression,
+            $.method_call,
+            $.arrow_expression,
+            $.binary_expression,
+            $._paren_expression,
+            $.builtin_constant,
+        ),
+
+        method_call: $ => seq(
+            optional(seq($.id, '::')),
+            field('name', $.identifier),
+            $.args_list,
+        ),
+
+        args_list: $ => seq(
+            '(',
+            optional($._expression),
+            repeat(seq(',', $._expression)),
+            ')',
+        ),
+
+        arrow_expression: $ => seq(
+            $._expression,
+            '->',
+            $.method_call,
+        ),
+
+        builtin_constant: $ => choice(
+            'NO_OWNER',
+            'DIR_LEFT',
+            'DIR_RIGHT',
+        ),
+
+        _paren_expression: $ => seq(
+            '(',
+            optional($._expression),
+            ')',
+        ),
+
+        unary_expression: $ => prec(17, choice(
+            prec.left(2, seq('++', $._expression)),
+            seq($._expression, '++'),
+            prec.left(seq('--', $._expression)),
+            seq($._expression, '--'),
+            prec.right(17, seq('-', $._expression)),
+            prec.right(17, seq('+', $._expression)),
+            prec.right(17, seq('!', $._expression)),
+            prec.right(17, seq('~', $._expression)),
+        )),
+        
+        binary_expression: $ => choice(
+            prec.left(15, seq($._expression, '**', $._expression)),
+            prec.left(14, seq($._expression, '*', $._expression)),
+            prec.left(14, seq($._expression, '/', $._expression)),
+            prec.left(14, seq($._expression, '%', $._expression)),
+            prec.left(13, seq($._expression, '+', $._expression)),
+            prec.left(13, seq($._expression, '-', $._expression)),
+            prec.left(12, seq($._expression, '<<', $._expression)),
+            prec.left(12, seq($._expression, '<=', $._expression)),
+            prec.left(11, seq($._expression, '<', $._expression)),
+            prec.left(11, seq($._expression, '>', $._expression)),
+            prec.left(11, seq($._expression, '>=', $._expression)),
+            prec.left(10, seq($._expression, '..', $._expression)),
+
+            prec.left(9, seq($._expression, '==', $._expression)),
+            prec.left(9, seq($._expression, '!=', $._expression)),
+            prec.left(9, seq($._expression, 'S=', $._expression)),
+            prec.left(9, seq($._expression, 'eq', $._expression)),
+            prec.left(9, seq($._expression, 'ne', $._expression)),
+
+            prec.left(8, seq($._expression, '&', $._expression)),
+
+            prec.left(6, seq($._expression, '^', $._expression)),
+            prec.left(6, seq($._expression, '|', $._expression)),
+            
+            prec.left(5, seq($._expression, '&&', $._expression)),
+            prec.left(4, seq($._expression, '||', $._expression)),
+
+            prec.left(3, seq($._expression, '??', $._expression)),
+
+            prec.right(2, seq($._expression, '**=', $._expression)),
+            prec.right(2, seq($._expression, '*=', $._expression)),
+            prec.right(2, seq($._expression, '/=', $._expression)),
+            prec.right(2, seq($._expression, '%=', $._expression)),
+            prec.right(2, seq($._expression, '+=', $._expression)),
+            prec.right(2, seq($._expression, '-=', $._expression)),
+            prec.right(2, seq($._expression, '<<=', $._expression)),
+            prec.right(2, seq($._expression, '>>=', $._expression)),
+            prec.right(2, seq($._expression, '..=', $._expression)),
+            prec.right(2, seq($._expression, '&=', $._expression)),
+            prec.right(2, seq($._expression, '|=', $._expression)),
+            prec.right(2, seq($._expression, '^=', $._expression)),
+            prec.right(2, seq($._expression, '??=', $._expression)),
+            prec.right(2, seq($._expression, '=', $._expression)),
+        ),
+
+        array: $ => seq(
+            '[',
+            optional($._expression),
+            repeat(seq(',', $._expression)),
+            ']',
+        ),
+
+        string: $ => /".*"/,
+
+        id: $ => idRe,
+
+        identifier: $ => /[_a-zA-Z][_a-zA-Z0-9]*/,
+
+        number: $ => /\d+/,
+
+        bool: $ => choice('true', 'false'),
+
+        nil: $ => 'nil',
+
+        comment: $ => token(choice(
+            seq('//', /.*/),
+            seq(
+                '/*',
+                /[^*]*\*+([^/*][^*]*\*+)*/,
+                '/',
+            ),
+        )),
+    },
+});
