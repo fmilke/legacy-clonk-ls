@@ -3,6 +3,9 @@ import { OutputChannel, window, workspace } from "vscode";
 import { CONFIG_NAME } from './config';
 
 export class ScenarioRunner {
+
+    public static readonly FLAG_DEV_MODE = "/console";
+    
     public run(pathToScenario: string, outputChannel: OutputChannel) {
         const pathToExecutable = this.getPathToGameExecutable();
 
@@ -11,7 +14,7 @@ export class ScenarioRunner {
             return;
         }
 
-        this.execute([`${pathToScenario}`], outputChannel);
+        this.execute([`${pathToScenario}`, ScenarioRunner.FLAG_DEV_MODE], outputChannel);
     }
 
     private execute(args: string[], outputChannel: OutputChannel) {
