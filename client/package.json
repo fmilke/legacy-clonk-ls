@@ -78,13 +78,25 @@
 					"when": "resourceExtname == .c4s"
 				}
 			]
-		}
+		},
+		"languages": [
+		{
+			"id": "c4script",
+			"extensions": [".c"],
+			"aliases": ["C4script"],
+			"filenames": [],
+			"firstLine": "/(#include|#appendto|#strict)/",
+			"icon": {
+				"light": "./icons/c4script-light.png",
+				"dark": "./icons/c4script-dark.png"
+			},
+			"configuration": "./c4script-language-configuration.json"
+		}]
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
 		"compile": "tsc -b",
-		"watch": "tsc -b -w",
-		"postinstall": "cd client && npm install"
+		"watch": "tsc -b -w"
 	},
 	"devDependencies": {
 		"@types/mocha": "^9.1.0",

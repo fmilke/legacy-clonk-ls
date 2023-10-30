@@ -1,6 +1,5 @@
 use dashmap::DashMap;
 use std::sync::RwLock;
-use std::env;
 use tokio;
 use tower_lsp::jsonrpc::Result;
 use tower_lsp::lsp_types::*;
@@ -270,33 +269,13 @@ async fn start_language_server() {
     Server::new(stdin, stdout, socket).serve(service).await;
 }
 
-const MOCK: &str = include_str!("../03.c");
-
-fn start_as_cli() {
-    let mut parser = Parser::new();
-    parser
-        .set_language(tree_sitter_c4script::language())
-        .expect("Loading c4scrpt grammar");
-
-    let tree = parser.parse(MOCK, None).unwrap();
-
-    println!("{:?}", tree);
-
-    highlighting::collect_tokens(&tree, TokenTypes::default());
-}
-
 #[tokio::main]
 async fn main() {
 
+    // TODO: Remove
     if let Ok(file) = std::fs::File::create("/home/fmi/lsp-log") {
         let _ = WriteLogger::init(log::LevelFilter::Trace, simplelog::Config::default(), file);
     }
 
-    let launch_with_lsp = env::args().find(|a| a == "--lsp").is_some();
-
-    if launch_with_lsp {
-        start_language_server().await;
-    } else {
-        start_as_cli();
-    }
+    start_language_server().await;
 }

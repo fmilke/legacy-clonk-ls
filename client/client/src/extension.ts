@@ -24,14 +24,14 @@ export function activate(context: ExtensionContext) {
 
 	const serverOptions: ServerOptions = {
 		command: pathToBin,
-		args: ['--lsp'],
+		args: [],
 		transport: TransportKind.stdio,
 	};
 
 	const clientOptions: LanguageClientOptions = {
 		documentSelector: [{
 			scheme: 'file',
-			language: 'plaintext',
+			language: 'c4script',
 		}],
 	};
 
