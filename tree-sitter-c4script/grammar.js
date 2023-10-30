@@ -2,8 +2,7 @@ const idRe = /[_A-Z0-9]{4}/;
 
 /*
 TODO:
-- global->
-- maps
+- double check block vs map precedence
 - ["asd" | "sdf"] syntax at function start
 */
 
@@ -27,7 +26,6 @@ module.exports = grammar({
             $.function_definition,
             $.var_definition,
             $.include,
-            // TODO
         ),
 
         function_definition: $ => seq(
@@ -109,11 +107,11 @@ module.exports = grammar({
             'any',
         ),
 
-        block: $ => seq(
+        block: $ => prec(2, seq(
             '{',
             repeat($._statement),
             '}',
-        ),
+        )),
 
         _statement: $ => choice(
             $.return_statement,
@@ -123,7 +121,6 @@ module.exports = grammar({
             $.for_statement,
             $.flow_control_statement,
             $._expression_statement,
-            // TODO
         ),
 
         _expression_statement: $ => seq(
@@ -202,7 +199,7 @@ module.exports = grammar({
             )),
         )),
 
-        _expression: $ => choice(
+        _expression: $ => prec(2, choice(
             $.identifier,
             $.bool,
             $.nil,
@@ -216,7 +213,9 @@ module.exports = grammar({
             $.binary_expression,
             $._paren_expression,
             $.builtin_constant,
-        ),
+            $.map,
+            $.map_access,
+        )),
 
         method_call: $ => seq(
             optional(seq($.id, '::')),
@@ -241,6 +240,7 @@ module.exports = grammar({
             'NO_OWNER',
             'DIR_LEFT',
             'DIR_RIGHT',
+            'global',
         ),
 
         _paren_expression: $ => seq(
@@ -259,7 +259,7 @@ module.exports = grammar({
             prec.right(17, seq('!', $._expression)),
             prec.right(17, seq('~', $._expression)),
         )),
-        
+
         binary_expression: $ => choice(
             prec.left(15, seq($._expression, '**', $._expression)),
             prec.left(14, seq($._expression, '*', $._expression)),
@@ -284,7 +284,7 @@ module.exports = grammar({
 
             prec.left(6, seq($._expression, '^', $._expression)),
             prec.left(6, seq($._expression, '|', $._expression)),
-            
+
             prec.left(5, seq($._expression, '&&', $._expression)),
             prec.left(4, seq($._expression, '||', $._expression)),
 
@@ -306,11 +306,36 @@ module.exports = grammar({
             prec.right(2, seq($._expression, '=', $._expression)),
         ),
 
-        array: $ => seq(
+        array: $ => prec(2, seq(
             '[',
             optional($._expression),
             repeat(seq(',', $._expression)),
             ']',
+        )),
+
+        map: $ => seq(
+            '{',
+            optional($.map_entry),
+            repeat(seq(',', $.map_entry)),
+            optional(','),
+            '}',
+        ),
+
+        map_entry: $ => seq(
+            $.map_key,
+            '=',
+            $._expression,
+        ),
+
+        map_key: $ => choice(
+            seq('[', $._expression, ']'),
+            $.identifier,
+            $.string,
+        ),
+
+        map_access: $ => choice(
+            seq($._expression, '.', $.identifier),
+            seq($._expression, '[', $._expression, ']'),
         ),
 
         string: $ => /".*"/,

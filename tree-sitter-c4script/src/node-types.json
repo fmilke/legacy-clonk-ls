@@ -55,6 +55,14 @@
           "named": true
         },
         {
+          "type": "map",
+          "named": true
+        },
+        {
+          "type": "map_access",
+          "named": true
+        },
+        {
           "type": "method_call",
           "named": true
         },
@@ -111,6 +119,14 @@
         },
         {
           "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "map",
+          "named": true
+        },
+        {
+          "type": "map_access",
           "named": true
         },
         {
@@ -173,6 +189,14 @@
           "named": true
         },
         {
+          "type": "map",
+          "named": true
+        },
+        {
+          "type": "map_access",
+          "named": true
+        },
+        {
           "type": "method_call",
           "named": true
         },
@@ -229,6 +253,14 @@
         },
         {
           "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "map",
+          "named": true
+        },
+        {
+          "type": "map_access",
           "named": true
         },
         {
@@ -300,6 +332,14 @@
         },
         {
           "type": "if_statement",
+          "named": true
+        },
+        {
+          "type": "map",
+          "named": true
+        },
+        {
+          "type": "map_access",
           "named": true
         },
         {
@@ -398,6 +438,14 @@
         },
         {
           "type": "if_statement",
+          "named": true
+        },
+        {
+          "type": "map",
+          "named": true
+        },
+        {
+          "type": "map_access",
           "named": true
         },
         {
@@ -534,6 +582,14 @@
           "named": true
         },
         {
+          "type": "map",
+          "named": true
+        },
+        {
+          "type": "map_access",
+          "named": true
+        },
+        {
           "type": "method_call",
           "named": true
         },
@@ -578,6 +634,226 @@
       "types": [
         {
           "type": "id",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "map",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "map_entry",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "map_access",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "array",
+          "named": true
+        },
+        {
+          "type": "arrow_expression",
+          "named": true
+        },
+        {
+          "type": "binary_expression",
+          "named": true
+        },
+        {
+          "type": "bool",
+          "named": true
+        },
+        {
+          "type": "builtin_constant",
+          "named": true
+        },
+        {
+          "type": "id",
+          "named": true
+        },
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "map",
+          "named": true
+        },
+        {
+          "type": "map_access",
+          "named": true
+        },
+        {
+          "type": "method_call",
+          "named": true
+        },
+        {
+          "type": "nil",
+          "named": true
+        },
+        {
+          "type": "number",
+          "named": true
+        },
+        {
+          "type": "string",
+          "named": true
+        },
+        {
+          "type": "unary_expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "map_entry",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "array",
+          "named": true
+        },
+        {
+          "type": "arrow_expression",
+          "named": true
+        },
+        {
+          "type": "binary_expression",
+          "named": true
+        },
+        {
+          "type": "bool",
+          "named": true
+        },
+        {
+          "type": "builtin_constant",
+          "named": true
+        },
+        {
+          "type": "id",
+          "named": true
+        },
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "map",
+          "named": true
+        },
+        {
+          "type": "map_access",
+          "named": true
+        },
+        {
+          "type": "map_key",
+          "named": true
+        },
+        {
+          "type": "method_call",
+          "named": true
+        },
+        {
+          "type": "nil",
+          "named": true
+        },
+        {
+          "type": "number",
+          "named": true
+        },
+        {
+          "type": "string",
+          "named": true
+        },
+        {
+          "type": "unary_expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "map_key",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": false,
+      "types": [
+        {
+          "type": "array",
+          "named": true
+        },
+        {
+          "type": "arrow_expression",
+          "named": true
+        },
+        {
+          "type": "binary_expression",
+          "named": true
+        },
+        {
+          "type": "bool",
+          "named": true
+        },
+        {
+          "type": "builtin_constant",
+          "named": true
+        },
+        {
+          "type": "id",
+          "named": true
+        },
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "map",
+          "named": true
+        },
+        {
+          "type": "map_access",
+          "named": true
+        },
+        {
+          "type": "method_call",
+          "named": true
+        },
+        {
+          "type": "nil",
+          "named": true
+        },
+        {
+          "type": "number",
+          "named": true
+        },
+        {
+          "type": "string",
+          "named": true
+        },
+        {
+          "type": "unary_expression",
           "named": true
         }
       ]
@@ -694,6 +970,14 @@
           "named": true
         },
         {
+          "type": "map",
+          "named": true
+        },
+        {
+          "type": "map_access",
+          "named": true
+        },
+        {
           "type": "method_call",
           "named": true
         },
@@ -789,6 +1073,14 @@
           "named": true
         },
         {
+          "type": "map",
+          "named": true
+        },
+        {
+          "type": "map_access",
+          "named": true
+        },
+        {
           "type": "method_call",
           "named": true
         },
@@ -845,6 +1137,14 @@
         },
         {
           "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "map",
+          "named": true
+        },
+        {
+          "type": "map_access",
           "named": true
         },
         {
@@ -945,6 +1245,14 @@
         },
         {
           "type": "if_statement",
+          "named": true
+        },
+        {
+          "type": "map",
+          "named": true
+        },
+        {
+          "type": "map_access",
           "named": true
         },
         {
@@ -1084,6 +1392,10 @@
   },
   {
     "type": "->",
+    "named": false
+  },
+  {
+    "type": ".",
     "named": false
   },
   {
