@@ -1,0 +1,70 @@
+===
+Simple method call
+===
+
+func Fn() {
+    Call();
+}
+
+---
+
+(source_file
+    (function_definition
+        (identifier)
+        (parameter_list)
+        (block
+            (method_call (identifier) (args_list)))))
+
+===
+Simple method call with specific id
+===
+
+func Fn() {
+    CLNK::Call();
+}
+
+---
+
+(source_file
+    (function_definition
+        (identifier)
+        (parameter_list)
+        (block
+            (method_call (id) (identifier) (args_list)))))
+
+===
+Method call with two arguments
+===
+
+func Fn() {
+    Call(1, a);
+}
+
+---
+
+(source_file
+    (function_definition
+        (identifier)
+        (parameter_list)
+        (block
+            (method_call (identifier) (args_list (number) (identifier))))))
+
+===
+Method call of returned value
+===
+
+func Fn() {
+    GetHiRank()->Explode(100);
+}
+
+---
+
+(source_file
+    (function_definition
+        (identifier)
+        (parameter_list)
+        (block
+            (arrow_expression
+                (method_call (identifier) (args_list))
+                (method_call (identifier) (args_list (number)))))))
+

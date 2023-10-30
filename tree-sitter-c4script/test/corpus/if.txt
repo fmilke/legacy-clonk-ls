@@ -1,0 +1,108 @@
+===
+If-statement with return
+===
+
+func GetX() {
+    if (1) return (1);
+}
+
+---
+
+(source_file 
+    (function_definition
+        (identifier)
+        (parameter_list)
+        (block 
+            (if_statement (number)
+            (return_statement (number))))))
+
+
+===
+If-statement with return in a block
+===
+
+func GetX() {
+    if (1) {
+        return (1);
+    }
+}
+
+---
+
+(source_file 
+    (function_definition
+        (identifier)
+        (parameter_list)
+        (block 
+            (if_statement (number)
+                (block 
+                    (return_statement (number)))))))
+
+===
+If-else with return
+===
+
+func GetX() {
+    if (1) return (1);
+    else return (2);
+}
+
+---
+
+(source_file 
+    (function_definition
+        (identifier)
+        (parameter_list)
+        (block 
+            (if_statement (number)
+            (return_statement (number))
+            (return_statement (number))))))
+
+
+===
+If with else block
+===
+
+func GetX() {
+    if (1) return (1);
+    else {
+        return (2);
+    }
+}
+
+---
+
+(source_file 
+    (function_definition
+        (identifier)
+        (parameter_list)
+        (block 
+            (if_statement (number)
+            (return_statement (number))
+            (block
+                (return_statement (number)))))))
+
+===
+If with else-if block
+===
+
+func GetX() {
+    if (1) return (1);
+    else if(0) {
+        return (2);
+    }
+}
+
+---
+
+(source_file 
+    (function_definition
+        (identifier)
+        (parameter_list)
+        (block 
+            (if_statement
+                (number)
+                (return_statement (number))
+                (if_statement (number)
+                    (block
+                        (return_statement (number))))))))

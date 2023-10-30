@@ -1,0 +1,66 @@
+===
+Activate
+===
+/* Feuerfaust */
+#strict
+
+public func Activate(caster, real_caster)
+{
+  var clonk = caster;
+  if (real_caster) clonk = real_caster;
+  
+  Sound("Magic1");
+
+  var iChkEff;
+  if (iChkEff = CheckEffect("FirefistNSpell", 0, 130)) return(iChkEff!=-1 && RemoveObject());
+}
+
+---
+
+(source_file
+  (comment)
+  (pragma_strict)
+  (function_definition
+    (visibility)
+    (identifier)
+    (parameter_list
+      (param
+        (identifier))
+      (param
+        (identifier)))
+    (block
+      (var_definition
+        (var_scope)
+        (var_assignment
+          (identifier)
+          (identifier)))
+      (if_statement
+        (identifier)
+        (binary_expression
+          (identifier)
+          (identifier)))
+      (method_call
+        (identifier)
+        (args_list
+          (string)))
+      (var_definition
+        (var_scope)
+        (var_assignment
+          (identifier)))
+      (if_statement
+        (binary_expression
+          (identifier)
+          (method_call
+            (identifier)
+            (args_list
+              (string)
+              (number)
+              (number))))
+        (return_statement
+          (binary_expression
+            (binary_expression
+              (identifier)
+              (unary_expression (number)))
+            (method_call 
+              (identifier)
+              (args_list))))))))

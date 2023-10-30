@@ -1,0 +1,67 @@
+===
+Simple add
+===
+
+func Fn() {
+    1 + 1;
+}
+
+---
+
+(source_file
+    (function_definition
+        (identifier)
+        (parameter_list)
+        (block
+            (binary_expression (number) (number)))))
+
+===
+Postfix and prefix increment
+===
+
+func Fn() {
+    ++1++;
+}
+
+---
+
+(source_file
+    (function_definition
+        (identifier)
+        (parameter_list)
+        (block
+            (unary_expression (unary_expression (number))))))
+
+===
+Increment and add
+===
+
+func Fn() {
+    1 + ++1;
+}
+
+---
+
+(source_file
+    (function_definition
+        (identifier)
+        (parameter_list)
+        (block
+            (binary_expression (number) (unary_expression (number))))))
+
+===
+Shift and exponentiated
+===
+
+func Fn() {
+    1 << b ** 2;
+}
+
+---
+
+(source_file
+    (function_definition
+        (identifier)
+        (parameter_list)
+        (block
+            (binary_expression (number) (binary_expression (identifier) (number))))))

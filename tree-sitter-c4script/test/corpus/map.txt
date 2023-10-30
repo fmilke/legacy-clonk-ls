@@ -1,0 +1,150 @@
+===
+Empty Map
+===
+
+local map = {};
+
+---
+
+
+(source_file
+    (var_definition (var_scope) (var_assignment (identifier) (map))))
+
+
+===
+Map with single key
+===
+
+local map = {
+    countdown = 100    
+};
+
+---
+
+(source_file
+    (var_definition
+        (var_scope)
+        (var_assignment
+            (identifier)
+                (map 
+                    (map_entry
+                        (map_key (identifier))
+                        (number))))))
+
+===
+Map with single key and trailing comma
+===
+
+local map = {
+    countdown = 100,
+};
+
+---
+
+
+(source_file
+    (var_definition
+        (var_scope)
+        (var_assignment
+            (identifier)
+                (map 
+                    (map_entry
+                        (map_key (identifier))
+                        (number))))))
+
+===
+Map with multiple entries
+===
+
+local map = {
+    a = 1,
+    b = 2,
+};
+
+---
+
+
+(source_file
+    (var_definition
+        (var_scope)
+        (var_assignment
+            (identifier)
+                (map 
+                    (map_entry
+                        (map_key (identifier))
+                        (number)
+                    )
+                    (map_entry
+                        (map_key (identifier))
+                        (number)
+                    )))))
+
+===
+Map with different key formats
+===
+
+local map = {
+    a = 1,
+    "b" = 2,
+    [CLNK] = 3,
+    [Random()] = 3,
+};
+
+---
+
+(source_file
+    (var_definition
+        (var_scope)
+        (var_assignment
+            (identifier)
+                (map 
+                    (map_entry
+                        (map_key (identifier))
+                        (number)
+                    )
+                    (map_entry
+                        (map_key (string))
+                        (number)
+                    )
+                    (map_entry
+                        (map_key (id))
+                        (number)
+                    )
+                    (map_entry
+                        (map_key (method_call (identifier) (args_list)))
+                        (number)
+                    )))))
+
+===
+Map access via bracket-notation
+===
+
+func GetX() {
+    my_map[x];
+}
+
+---
+
+(source_file 
+    (function_definition
+        (identifier)
+        (parameter_list)
+        (block
+            (map_access (identifier) (identifier)))))
+
+===
+Map access via dot-notation
+===
+
+func GetX() {
+    my_map.x;
+}
+
+---
+
+(source_file 
+    (function_definition
+        (identifier)
+        (parameter_list)
+        (block
+            (map_access (identifier) (identifier)))))

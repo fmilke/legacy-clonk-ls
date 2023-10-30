@@ -1,0 +1,25 @@
+===
+Empty array
+===
+
+local a = [];
+
+---
+
+(source_file
+    (var_definition (var_scope) (var_assignment (identifier) (array))))
+
+===
+Array of numbers
+===
+
+local a = [1, 2, 3, 4];
+
+---
+
+(source_file
+    (var_definition (var_scope) (var_assignment (identifier) (array
+        (number) (number) (number) (number)
+    ))))
+
+

@@ -1,0 +1,288 @@
+===
+String
+===
+
+local s = "Hi";
+
+---
+
+(source_file
+    (var_definition (var_scope) (var_assignment (identifier) (string))))
+
+===
+Include pragma
+===
+
+#include CLNK;
+
+---
+
+(source_file
+    (include (id)))
+
+===
+Strict pragmas
+===
+
+#strict
+#strict 2
+
+---
+
+(source_file
+    (pragma_strict)
+    (pragma_strict))
+
+
+=====
+Simple var definition
+=====
+
+local name;
+
+---
+
+(source_file
+    (var_definition (var_scope) (var_assignment (identifier))))
+
+=====
+Simple var definition with assignment
+=====
+
+local name = 1;
+
+---
+
+(source_file
+    (var_definition (var_scope) (var_assignment (identifier) (number))))
+=====
+Var definition inside function
+=====
+
+func GetX() {
+    var a;
+}
+
+---
+
+(source_file 
+    (function_definition
+        (identifier)
+        (parameter_list)
+        (block (var_definition (var_scope) (var_assignment (identifier))))))
+
+=====
+Multiple var definitions
+=====
+
+local name1 = 1, name2;
+local name3, name4;
+local name5 = 2, name6 = 3;
+
+---
+
+(source_file
+    (var_definition (var_scope) 
+        (var_assignment (identifier) (number))
+        (var_assignment (identifier)))
+
+
+    (var_definition (var_scope)
+        (var_assignment (identifier))
+        (var_assignment (identifier)))
+
+    (var_definition (var_scope)
+        (var_assignment (identifier) (number))
+        (var_assignment (identifier) (number))))
+
+====
+Empty function
+=====
+
+func GetX() {
+}
+
+---
+
+(source_file 
+    (function_definition
+        (identifier)
+        (parameter_list)
+        (block)))
+
+====
+Function with two untyped arguments
+=====
+
+func SetPos(x,y) {
+}
+
+---
+
+(source_file 
+    (function_definition
+        (identifier)
+        (parameter_list (param (identifier)) (param (identifier)))
+        (block)))
+
+====
+Function with two typed arguments
+=====
+
+func GetOneAssignTheOther(bool x, &y) {
+}
+
+---
+
+(source_file 
+    (function_definition
+        (identifier)
+        (parameter_list
+            (param (type) (identifier))
+            (param (type) (identifier)))
+        (block)))
+
+
+===
+Simple function returning nothing
+===
+
+func GetX() {
+    return ();
+}
+
+---
+
+(source_file 
+    (function_definition
+        (identifier)
+        (parameter_list)
+        (block
+            (return_statement))))
+===
+Appendto variations
+===
+
+#appendto CLNK
+#appendto *
+#appendto CLNK nowarn
+
+---
+
+(source_file 
+    (appendto (id))
+    (appendto)
+    (appendto (id) (nowarn)))
+
+===
+While loop
+===
+
+func Fn() {
+    while (true) return(1);
+}
+
+---
+
+(source_file 
+    (function_definition
+        (identifier)
+        (parameter_list)
+        (block 
+            (while_statement (bool)
+            (return_statement (number))))))
+
+===
+Endless for-loop
+===
+
+func Fn() {
+    for (;;) return(1);
+}
+
+---
+
+(source_file 
+    (function_definition
+        (identifier)
+        (parameter_list)
+        (block 
+            (for_statement
+            (return_statement (number))))))
+
+===
+For in over array
+===
+
+func Fn() {
+    for (var a in b) continue;
+}
+
+---
+
+(source_file 
+    (function_definition
+        (identifier)
+        (parameter_list)
+        (block 
+            (for_statement (identifier) (identifier)
+            (flow_control_statement)))))
+===
+For in over map
+===
+
+func Fn() {
+    for (var k, v in b) return(1);
+}
+
+---
+
+(source_file 
+    (function_definition
+        (identifier)
+        (parameter_list)
+        (block 
+            (for_statement (identifier) (identifier) (identifier)
+            (return_statement (number))))))
+
+
+===
+Simple code snippet
+===
+
+/* Feuerfaust */
+
+#strict
+
+public func Activate() {
+    return (1);
+}
+
+---
+
+(source_file
+    (comment)
+        (pragma_strict)
+            (function_definition
+                (visibility)
+                (identifier)
+                (parameter_list)
+                (block
+                    (return_statement (number)))))
+
+===
+Empty parens inside return
+===
+
+func Fn() {
+    return (());
+}
+
+---
+
+(source_file
+    (function_definition
+        (identifier)
+        (parameter_list)
+        (block
+            (return_statement))))
