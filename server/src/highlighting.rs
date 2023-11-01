@@ -288,6 +288,13 @@ fn collect_tokens_step(
                         &node.child(0).unwrap(),
                     );
                 },
+                "else" => {
+                    add_token(
+                        ctx,
+                        ctx.token_types.keyword,
+                        &node,
+                    );
+                },
                 "return_statement" => {
                     add_token(
                         ctx,

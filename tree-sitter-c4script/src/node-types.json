@@ -562,6 +562,10 @@
           "named": true
         },
         {
+          "type": "else",
+          "named": true
+        },
+        {
           "type": "flow_control_statement",
           "named": true
         },
@@ -1467,14 +1471,6 @@
     "named": false
   },
   {
-    "type": "DIR_LEFT",
-    "named": false
-  },
-  {
-    "type": "DIR_RIGHT",
-    "named": false
-  },
-  {
     "type": "NO_OWNER",
     "named": false
   },
@@ -1524,7 +1520,7 @@
   },
   {
     "type": "else",
-    "named": false
+    "named": true
   },
   {
     "type": "eq",

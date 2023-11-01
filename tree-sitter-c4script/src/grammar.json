@@ -252,10 +252,6 @@
         {
           "type": "SYMBOL",
           "name": "id"
-        },
-        {
-          "type": "STRING",
-          "value": ";"
         }
       ]
     },
@@ -714,8 +710,8 @@
                 "type": "SEQ",
                 "members": [
                   {
-                    "type": "STRING",
-                    "value": "else"
+                    "type": "SYMBOL",
+                    "name": "else"
                   },
                   {
                     "type": "CHOICE",
@@ -739,6 +735,10 @@
           }
         ]
       }
+    },
+    "else": {
+      "type": "STRING",
+      "value": "else"
     },
     "_expression": {
       "type": "PREC",
@@ -911,14 +911,6 @@
         {
           "type": "STRING",
           "value": "NO_OWNER"
-        },
-        {
-          "type": "STRING",
-          "value": "DIR_LEFT"
-        },
-        {
-          "type": "STRING",
-          "value": "DIR_RIGHT"
         },
         {
           "type": "STRING",

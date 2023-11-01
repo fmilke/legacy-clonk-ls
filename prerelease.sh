@@ -21,6 +21,8 @@ cd client
 npm run compile
 
 # Step 4: Move server artifacts to vscode extension package directory
+rm -f client/out/legacy-clonk-ls
+rm -f client/out/legacy-clonk-ls.exe
 mv ../server/target/x86_64-pc-windows-gnu/release/legacy-clonk-ls.exe client/out/
 mv ../server/target/x86_64-unknown-linux-gnu/release/legacy-clonk-ls client/out/
 

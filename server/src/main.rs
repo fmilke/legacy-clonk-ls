@@ -5,7 +5,6 @@ use tower_lsp::jsonrpc::Result;
 use tower_lsp::lsp_types::*;
 use tower_lsp::{Client, LanguageServer, LspService, Server};
 use tree_sitter::{Parser, Tree, InputEdit, Point};
-use simplelog::WriteLogger;
 
 // mod analyze;
 mod highlighting;
@@ -24,7 +23,6 @@ pub struct TokenTypes {
     parameter: u32,
     method: u32,
     function: u32,
-    modifier: u32,
 }
 
 #[derive(Debug)]
@@ -74,7 +72,6 @@ impl Backend {
                 SemanticTokenType::PARAMETER,
                 SemanticTokenType::METHOD,
                 SemanticTokenType::FUNCTION,
-                SemanticTokenType::MODIFIER,
             ],
             token_modifiers: vec![],
         };
@@ -92,7 +89,6 @@ impl Backend {
             parameter: 6,
             method: 7,
             function: 8,
-            modifier: 9,
         };
 
         Some((lut, legend))
@@ -272,10 +268,12 @@ async fn start_language_server() {
 #[tokio::main]
 async fn main() {
 
-    // TODO: Remove
+    // TODO: Properly configure logging
+    /*
     if let Ok(file) = std::fs::File::create("/home/fmi/lsp-log") {
         let _ = WriteLogger::init(log::LevelFilter::Trace, simplelog::Config::default(), file);
     }
+    */
 
     start_language_server().await;
 }

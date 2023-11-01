@@ -76,7 +76,6 @@ module.exports = grammar({
         include: $ => seq(
             '#include',
             $.id,
-            ';',
         ),
 
         appendto: $ => seq(
@@ -191,13 +190,15 @@ module.exports = grammar({
                 $.block,
             ),
             optional(seq(
-                'else',
+                $.else,
                 choice(
                     $._statement,
                     $.block,
                 ),
             )),
         )),
+
+        else: $ => 'else',
 
         _expression: $ => prec(2, choice(
             $.identifier,
@@ -238,8 +239,8 @@ module.exports = grammar({
 
         builtin_constant: $ => choice(
             'NO_OWNER',
-            'DIR_LEFT',
-            'DIR_RIGHT',
+            // 'DIR_LEFT',
+            // 'DIR_RIGHT',
             'global',
         ),
 
