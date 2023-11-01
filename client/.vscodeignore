@@ -2,3 +2,5 @@
 !client/out/extension.js
 !client/out/legacy-clonk-ls
 !client/out/legacy-clonk-ls.exe
+!icon.png
+!icons/
