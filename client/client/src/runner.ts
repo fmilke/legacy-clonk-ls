@@ -16,7 +16,7 @@ export class ScenarioRunner {
 
         this.execute([`${pathToScenario}`, ScenarioRunner.FLAG_DEV_MODE], outputChannel);
     }
-
+n
     private execute(args: string[], outputChannel: OutputChannel) {
         const pathToExecutable = this.getPathToGameExecutable();
         

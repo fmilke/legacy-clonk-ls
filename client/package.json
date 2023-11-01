@@ -3,14 +3,20 @@
 	"description": "A language extension for the game legacy clonk",
 	"author": "Fridjof Milke",
 	"license": "MIT",
-	"version": "1.0.0",
+	"version": "1.0.1",
+	"keywords": ["C4Script", "Clonk", "Game Dev"],
+	"icon": "./icons/ext-icon.png",
 	"engines": {
 		"vscode": "^1.75.0"
 	},
+    "repository": "https://github.com/fmilke/legacy-clonk-ls",
 	"activationEvents": [
 		"workspaceContains:clonk",
 		"workspaceContains:clonk.exe"
 	],
+	"preview": true,
+	"displayName": "Legacy Clonk Extension",
+    "publisher": "LegacyClonkDev",
 	"main": "./client/out/extension",
 	"contributes": {
 		"configuration": {
@@ -80,22 +86,27 @@
 			]
 		},
 		"languages": [
-		{
-			"id": "c4script",
-			"extensions": [".c"],
-			"aliases": ["C4script"],
-			"filenames": [],
-			"firstLine": "/(#include|#appendto|#strict)/",
-			"icon": {
-				"light": "./icons/c4script-light.png",
-				"dark": "./icons/c4script-dark.png"
-			},
-			"configuration": "./c4script-language-configuration.json"
-		}]
+			{
+				"id": "c4script",
+				"extensions": [
+					".c"
+				],
+				"aliases": [
+					"C4script"
+				],
+				"filenames": [],
+				"firstLine": "/(#include|#appendto|#strict)/",
+				"icon": {
+					"light": "./icons/c4script-light.png",
+					"dark": "./icons/c4script-dark.png"
+				},
+				"configuration": "./c4script-language-configuration.json"
+			}
+		]
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
-		"compile": "tsc -b",
+		"compile": "esbuild ./client/src/extension.ts --bundle --outfile=./client/out/extension.js --external:vscode --format=cjs --platform=node",
 		"watch": "tsc -b -w"
 	},
 	"devDependencies": {
@@ -103,6 +114,7 @@
 		"@types/node": "^16.18.34",
 		"@typescript-eslint/eslint-plugin": "^6.7.0",
 		"@typescript-eslint/parser": "^6.7.0",
+		"esbuild": "^0.19.5",
 		"eslint": "^8.35.0",
 		"mocha": "^9.2.1",
 		"typescript": "^5.2.2"

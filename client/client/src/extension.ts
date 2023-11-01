@@ -1,5 +1,5 @@
 import * as path from 'path';
-import { commands, ExtensionContext, window } from 'vscode';
+import { commands, ExtensionContext, OutputChannel, window } from 'vscode';
 
 import {
 	LanguageClient,
@@ -14,12 +14,14 @@ import { CONFIG_NAME } from './config';
 let client: LanguageClient;
 
 export function activate(context: ExtensionContext) {
+	const outputChannel = window.createOutputChannel('Legacy Clonk');
+	bindUi(context, outputChannel);
 
-	bindUi(context);
+	const executableName = process.platform === 'win32' ? 'legacy-clonk-ls.exe' : 'legacy-clonk-ls';
 
-	// TODO: Get proper server path
+	// TODO: Use different path in development
 	const pathToBin = context.asAbsolutePath(
-		path.join('..', 'server', 'target', 'debug', 'legacy-clonk-ls')
+		path.join('client', 'out', executableName)
 	);
 
 	const serverOptions: ServerOptions = {
@@ -37,7 +39,7 @@ export function activate(context: ExtensionContext) {
 
 	client = new LanguageClient(
 		'legacyClonkLanguageServer',
-		'Legacy Clonk',
+		'Legacy Clonk Language Server',
 		serverOptions,
 		clientOptions
 	);
@@ -46,8 +48,7 @@ export function activate(context: ExtensionContext) {
 	client.info("Client started");
 }
 
-function bindUi(context: ExtensionContext) {
-	const outputChannel = window.createOutputChannel('Legacy Clonk Ext');
+function bindUi(context: ExtensionContext, outputChannel: OutputChannel) {
 	const c4group = new C4Group(outputChannel);
 	const runner = new ScenarioRunner();
 
