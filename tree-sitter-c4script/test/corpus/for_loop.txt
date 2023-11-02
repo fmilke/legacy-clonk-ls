@@ -1,0 +1,74 @@
+===
+Endless for-loop
+===
+
+func Fn() {
+    for (;;) return(1);
+}
+
+---
+
+(source_file 
+    (function_definition
+        (identifier)
+        (parameter_list)
+        (block 
+            (for_statement
+            (return_statement (number))))))
+
+===
+For in over array
+===
+
+func Fn() {
+    for (var a in b) continue;
+}
+
+---
+
+(source_file 
+    (function_definition
+        (identifier)
+        (parameter_list)
+        (block 
+            (for_statement (identifier) (identifier)
+            (flow_control_statement)))))
+===
+For in over map
+===
+
+func Fn() {
+    for (var k, v in b) return(1);
+}
+
+---
+
+(source_file 
+    (function_definition
+        (identifier)
+        (parameter_list)
+        (block 
+            (for_statement (identifier) (identifier) (identifier)
+            (return_statement (number))))))
+
+
+===
+For-loop with block
+===
+
+func Fn() {
+    for (;;) {
+        return 1;
+    }
+}
+
+---
+
+(source_file 
+    (function_definition
+        (identifier)
+        (parameter_list)
+        (block 
+            (for_statement
+                (block
+                    (return_statement (number)))))))

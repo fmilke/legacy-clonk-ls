@@ -132,7 +132,10 @@ module.exports = grammar({
             '(',
             $._for_variations,
             ')',
-            optional($._statement),
+            choice(
+                $._statement,
+                $.block,
+            ),
         )),
 
         _for_variations: $ => choice(
@@ -169,9 +172,7 @@ module.exports = grammar({
 
         return_statement: $ => seq(
             'return',
-            '(',
             optional($._expression),
-            ')',
             ';',
         ),
 

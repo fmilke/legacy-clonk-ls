@@ -149,7 +149,7 @@ fn collect_tokens_step(
                     if let Some(vis) = node.child_by_field_name("visibility") {
                         add_token(
                             ctx,
-                            ctx.token_types.function,
+                            ctx.token_types.keyword,
                             &vis,
                         );
 
@@ -159,7 +159,7 @@ fn collect_tokens_step(
                     if let Some(name) = node.child(idx_of_func) {
                         add_token(
                             ctx,
-                            ctx.token_types.function,
+                            ctx.token_types.keyword,
                             &name,
                         );
                     }

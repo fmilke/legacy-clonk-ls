@@ -413,6 +413,10 @@
           "named": true
         },
         {
+          "type": "block",
+          "named": true
+        },
+        {
           "type": "bool",
           "named": true
         },

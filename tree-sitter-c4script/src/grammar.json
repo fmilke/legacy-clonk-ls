@@ -456,7 +456,8 @@
                 "name": "_statement"
               },
               {
-                "type": "BLANK"
+                "type": "SYMBOL",
+                "name": "block"
               }
             ]
           }
@@ -612,10 +613,6 @@
           "value": "return"
         },
         {
-          "type": "STRING",
-          "value": "("
-        },
-        {
           "type": "CHOICE",
           "members": [
             {
@@ -626,10 +623,6 @@
               "type": "BLANK"
             }
           ]
-        },
-        {
-          "type": "STRING",
-          "value": ")"
         },
         {
           "type": "STRING",
