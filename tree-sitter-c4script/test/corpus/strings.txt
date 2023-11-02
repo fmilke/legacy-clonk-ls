@@ -1,0 +1,24 @@
+===
+String
+===
+
+local s = "Hi";
+
+---
+
+(source_file
+    (var_definition (var_scope) (var_assignment (identifier) (string))))
+
+===
+Multiple strings in a single line
+===
+
+local s1 = "Hi", s2 = "Cya";
+
+---
+
+(source_file
+    (var_definition
+        (var_scope)
+        (var_assignment (identifier) (string))
+        (var_assignment (identifier) (string))))

@@ -1,19 +1,8 @@
 ===
-String
-===
-
-local s = "Hi";
-
----
-
-(source_file
-    (var_definition (var_scope) (var_assignment (identifier) (string))))
-
-===
 Include pragma
 ===
 
-#include CLNK;
+#include CLNK
 
 ---
 

@@ -339,7 +339,11 @@ module.exports = grammar({
             seq($._expression, '[', $._expression, ']'),
         ),
 
-        string: $ => /".*"/,
+        string: $ => seq(
+            '"',
+            /[^"]*/,
+            '"',
+        ),
 
         id: $ => idRe,
 

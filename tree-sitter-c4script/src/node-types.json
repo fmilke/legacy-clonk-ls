@@ -1036,6 +1036,11 @@
     }
   },
   {
+    "type": "string",
+    "named": true,
+    "fields": {}
+  },
+  {
     "type": "type",
     "named": true,
     "fields": {}
@@ -1303,6 +1308,10 @@
     "named": false
   },
   {
+    "type": "\"",
+    "named": false
+  },
+  {
     "type": "#appendto",
     "named": false
   },
@@ -1544,11 +1553,11 @@
   },
   {
     "type": "id",
-    "named": false
+    "named": true
   },
   {
     "type": "id",
-    "named": true
+    "named": false
   },
   {
     "type": "identifier",
@@ -1613,10 +1622,6 @@
   {
     "type": "static",
     "named": false
-  },
-  {
-    "type": "string",
-    "named": true
   },
   {
     "type": "string",
