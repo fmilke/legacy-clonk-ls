@@ -1,7 +1,5 @@
 import * as vscode from 'vscode';
-import { exec } from 'child_process';
-import { exists } from 'fs';
-import * as path from 'path';
+import { spawn } from 'child_process';
 import { CONFIG_NAME, configKeys } from "./config";
 
 export class C4Group  {
@@ -14,26 +12,12 @@ export class C4Group  {
 
     public unpack(pathToFolder: string): Thenable<void> {
         this.output.appendLine(`Unpacking: ${pathToFolder}`);
-        if (this.canExecute()) {
-            return this.execute([`"${pathToFolder}"`, C4Group.ARG_EXPLODE]);
-        } else {
-            this.output.appendLine('Cannot unpack. C4group setting not set.');
-            return Promise.resolve();
-        }
+        return this.execute([`${pathToFolder}`, C4Group.ARG_EXPLODE]);
     }
 
     public pack(pathToFolder: string): Thenable<void> {
         this.output.appendLine(`Packing: ${pathToFolder}`);
-        if (this.canExecute()) {
-            return this.execute([`"${pathToFolder}"`, C4Group.ARG_PACK]);
-        } else {
-            this.output.appendLine('Cannot pack. C4group setting not set.');
-            return Promise.resolve();
-        }
-    }
-
-    private canExecute() {
-        return true;
+        return this.execute([`${pathToFolder}`, C4Group.ARG_PACK]);
     }
 
     private getPathToExecutable() {
@@ -44,55 +28,50 @@ export class C4Group  {
         const pathToExecutable = this.getPathToExecutable();
 
         if (!pathToExecutable) {
-            vscode.window.showInformationMessage('Path to C4Group-Executable is not set. Please update your settings.');
+            vscode.window.showInformationMessage('Path to C4Group executable is not set. Please update your settings.');
             return Promise.resolve();
         }
-
-        const executableName = path.basename(pathToExecutable);
-        const cwd = pathToExecutable.substr(0, pathToExecutable.length - executableName.length);
-
-        const cmdString = [executableName, ...args].join(" ");
-
+        
         return new Promise<void>((resolve) => {
-            exec(cmdString, { cwd }, (error, _stdout, _stderr) => {
-                if (error) {
-                    this.pathForExecutableExists().then(executableExists => {
-                        if (executableExists) {
-                            vscode.window.showErrorMessage('Failed to invoke C4Group-Executable.');
-                        }
-                        else {
-                            vscode.window.showErrorMessage(`C4Group-Executable could not be found at: "${pathToExecutable}". Please check your settings.`);
-                        }
+            const stdErrChunks = [];
 
-                        resolve();
-                    });
-                } else if (this.loggedKeyError(_stdout)) {
-                    vscode.window.showErrorMessage('Failed to invoke C4Group-Executable. No key file found.');
-                } else {
-                    resolve();
-                }
+            const cprocess = spawn(pathToExecutable, args);
+
+            this.output.appendLine(pathToExecutable + ' ' + args.join(" "));
+
+            cprocess.stdout.on('data', (data) => {
+                this.output.appendLine("STDIN: " + data.toString());
             });
+
+            cprocess.stderr.on('data', (data) => {
+                stdErrChunks.push(data);
+                this.output.appendLine("STDERR: " + data.toString());
+            });
+
+            cprocess.on('error', (err) => {
+                const stderr = stdErrChunks.flat().toString();
+                this.provideDiagnostics(err, [pathToExecutable, ...args].join(" "), stderr);
+            });
+
+            cprocess.once('exit', resolve);
         });
     }
 
     private loggedKeyError(stdout: string): boolean {
+        // This should just be relevant for Clonk Rage
         return stdout.includes("No valid key file found.");
     }
 
-    private pathForExecutableExists(): Thenable<boolean> {
-        this.output.appendLine("Checking for executable");
-        const pathToExecutable = this.getPathToExecutable();
+    private provideDiagnostics(err: Error, cmdString: string, stderr: string) {
+        const pathToExecutable = this.getPathToExecutable() as string;
 
-        if (!pathToExecutable) {
-            return Promise.resolve(false);
+        if ('code' in err && err.code === "ENOENT") {
+            vscode.window.showErrorMessage(`C4Group executable could not be found at: "${pathToExecutable}". Please check your settings.`);
+        } else if (this.loggedKeyError(stderr)) {
+            vscode.window.showErrorMessage('Failed to invoke C4Group executable. No key file found.');
+        } else {
+            this.output.appendLine(`Calling game executable by: ${cmdString}`);
+            this.output.appendLine("Error executing c4group: " + err.toString());
         }
-
-        return new Promise((resolve) => {
-            exists(pathToExecutable, (doesExist) => {
-                this.output.appendLine("Exists: " + doesExist);
-                console.log(doesExist);
-                resolve(doesExist);
-            });
-        });
     }
 }

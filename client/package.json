@@ -47,7 +47,7 @@
 				},
 				"legacy-clonk-ext.pathToC4gExecutable": {
 					"type": "string",
-					"description": "Path to C4group Executable, which is used to pack/unpack .c4* files"
+					"description": "Path to C4Group Executable, which is used to pack/unpack .c4* files"
 				},
 				"legacy-clonk-ext.pathToGameExecutable": {
 					"type": "string",
@@ -107,7 +107,7 @@
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
 		"compile": "esbuild ./client/src/extension.ts --bundle --outfile=./client/out/extension.js --external:vscode --format=cjs --platform=node",
-		"watch": "tsc -b -w"
+		"watch": "npm run compile -- --watch"
 	},
 	"devDependencies": {
 		"@types/mocha": "^9.1.0",
