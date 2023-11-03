@@ -1,0 +1,67 @@
+===
+Empty parens inside return
+===
+
+func Fn() {
+    return (());
+}
+
+---
+
+(source_file
+    (function_definition
+        (identifier)
+        (parameter_list)
+        (block
+            (return_statement))))
+
+===
+Return true
+===
+
+func Fn() {
+    return true;
+}
+
+---
+
+(source_file
+    (function_definition
+        (identifier)
+        (parameter_list)
+        (block
+            (return_statement (bool)))))
+
+===
+Return true with parens
+===
+
+func Fn() {
+    return (true);
+}
+
+---
+
+(source_file
+    (function_definition
+        (identifier)
+        (parameter_list)
+        (block
+            (return_statement (bool)))))
+
+===
+Return multiple values
+===
+
+func Fn() {
+    return (true, false);
+}
+
+---
+
+(source_file
+    (function_definition
+        (identifier)
+        (parameter_list)
+        (block
+            (return_statement (bool) (bool)))))

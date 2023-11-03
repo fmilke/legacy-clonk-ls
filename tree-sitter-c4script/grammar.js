@@ -172,7 +172,10 @@ module.exports = grammar({
 
         return_statement: $ => seq(
             'return',
-            optional($._expression),
+            optional(choice(
+                $._expression2,
+                $._args_list,
+            )),
             ';',
         ),
 
@@ -219,6 +222,23 @@ module.exports = grammar({
             $.map_access,
         )),
 
+        _expression2: $ => prec(2, choice(
+            $.identifier,
+            $.bool,
+            $.nil,
+            $.number,
+            $.array,
+            $.string,
+            $.id,
+            $.unary_expression,
+            $.method_call,
+            $.arrow_expression,
+            $.binary_expression,
+            $.builtin_constant,
+            $.map,
+            $.map_access,
+        )),
+
         method_call: $ => seq(
             optional(seq($.id, '::')),
             field('name', $.identifier),
@@ -226,6 +246,13 @@ module.exports = grammar({
         ),
 
         args_list: $ => seq(
+            '(',
+            optional($._expression),
+            repeat(seq(',', $._expression)),
+            ')',
+        ),
+
+        _args_list: $ => seq(
             '(',
             optional($._expression),
             repeat(seq(',', $._expression)),
