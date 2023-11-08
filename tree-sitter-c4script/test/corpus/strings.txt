@@ -10,6 +10,18 @@ local s = "Hi";
     (var_definition (var_scope) (var_assignment (identifier) (string))))
 
 ===
+String
+===
+
+local s = "Hi \"Twonky\"";
+
+---
+
+(source_file
+    (var_definition (var_scope) (var_assignment (identifier) (string))))
+
+
+===
 Multiple strings in a single line
 ===
 
