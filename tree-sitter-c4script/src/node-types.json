@@ -1555,6 +1555,10 @@
     "named": true
   },
   {
+    "type": "const",
+    "named": false
+  },
+  {
     "type": "continue",
     "named": false
   },
@@ -1584,11 +1588,11 @@
   },
   {
     "type": "id",
-    "named": false
+    "named": true
   },
   {
     "type": "id",
-    "named": true
+    "named": false
   },
   {
     "type": "identifier",

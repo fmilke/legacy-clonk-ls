@@ -45,6 +45,7 @@ module.exports = grammar({
 
         var_definition: $ => seq(
             $.var_scope,
+            optional('const'),
             $.var_assignment,
             repeat(seq(',', $.var_assignment)),
             ';',
