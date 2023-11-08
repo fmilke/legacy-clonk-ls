@@ -76,6 +76,7 @@ module.exports = grammar({
 
         param: $ => seq(
             optional($.type),
+            optional('&'),
             $.identifier,
         ),
 
@@ -107,7 +108,6 @@ module.exports = grammar({
         ),
 
         type: $ => choice(
-            '&',
             'int',
             'bool',
             'id',
@@ -159,13 +159,13 @@ module.exports = grammar({
 
         _for_iterators: $ => choice(
             seq(
-                'var',
+                optional('var'),
                 $.identifier,
                 'in',
                 $._expression,
             ),
             seq(
-                'var',
+                optional('var'),
                 $.identifier,
                 ',',
                 $.identifier,
