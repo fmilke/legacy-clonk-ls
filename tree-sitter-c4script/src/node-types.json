@@ -481,6 +481,10 @@
           "named": true
         },
         {
+          "type": "var_definition_inline",
+          "named": true
+        },
+        {
           "type": "while_statement",
           "named": true
         }
@@ -1203,6 +1207,25 @@
     }
   },
   {
+    "type": "var_definition_inline",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "var_assignment",
+          "named": true
+        },
+        {
+          "type": "var_scope",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "var_scope",
     "named": true,
     "fields": {}
@@ -1557,11 +1580,11 @@
   },
   {
     "type": "id",
-    "named": true
+    "named": false
   },
   {
     "type": "id",
-    "named": false
+    "named": true
   },
   {
     "type": "identifier",

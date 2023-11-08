@@ -16,6 +16,8 @@ module.exports = grammar({
 
     word: $ => $.identifier,
 
+    conflicts: $ => [[$._for_iterators, $.var_scope]],
+
     rules: {
 
         source_file: $ => repeat($._definition),
@@ -46,6 +48,12 @@ module.exports = grammar({
             $.var_assignment,
             repeat(seq(',', $.var_assignment)),
             ';',
+        ),
+
+        var_definition_inline: $ => seq(
+            $.var_scope,
+            $.var_assignment,
+            repeat(seq(',', $.var_assignment)),
         ),
 
         visibility: $ => choice(
@@ -138,14 +146,7 @@ module.exports = grammar({
             ),
         )),
 
-        _for_variations: $ => choice(
-            seq(
-                optional($._expression),
-                ';',
-                optional($._expression),
-                ';',
-                optional($._expression),
-            ),
+        _for_iterators: $ => choice(
             seq(
                 'var',
                 $.identifier,
@@ -161,6 +162,22 @@ module.exports = grammar({
                 $._expression,
             ),
         ),
+
+        _std_for_loop: $ => seq(
+            optional(choice(
+                $.var_definition_inline,
+                $._expression,
+            )),
+            ';',
+            optional($._expression),
+            ';',
+            optional($._expression),
+        ),
+
+        _for_variations: $ => prec(3, choice(
+            $._for_iterators,
+            $._std_for_loop,  
+        )),
 
         while_statement: $ => prec.right(seq(
             'while',

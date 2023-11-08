@@ -72,3 +72,22 @@ func Fn() {
             (for_statement
                 (block
                     (return_statement (number)))))))
+
+===
+For-loop with variable
+===
+
+func Fn() {
+    for (var a = 0;;) return(1);
+}
+
+---
+
+(source_file 
+    (function_definition
+        (identifier)
+        (parameter_list)
+        (block 
+            (for_statement
+            (var_definition_inline (var_scope) (var_assignment (identifier) (number)))
+            (return_statement (number))))))
