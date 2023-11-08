@@ -278,8 +278,8 @@ module.exports = grammar({
 
         args_list: $ => seq(
             '(',
-            optional($._expression),
-            repeat(seq(',', optional($._expression))),
+            optional(choice($._expression, '...')),
+            repeat(seq(',', optional(choice($._expression, '...')))),
             ')',
         ),
 
