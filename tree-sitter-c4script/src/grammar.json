@@ -653,7 +653,8 @@
                 "name": "_statement"
               },
               {
-                "type": "BLANK"
+                "type": "SYMBOL",
+                "name": "block"
               }
             ]
           }

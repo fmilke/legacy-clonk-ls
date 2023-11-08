@@ -1,0 +1,36 @@
+===
+While-loop
+===
+
+func Fn() {
+    while (true) return(1);
+}
+
+---
+
+(source_file 
+    (function_definition
+        (identifier)
+        (parameter_list)
+        (block 
+            (while_statement (bool)
+            (return_statement (number))))))
+===
+While-loop with block
+===
+
+func Fn() {
+    while (true) {
+        break;
+    }
+}
+
+---
+
+(source_file 
+    (function_definition
+        (identifier)
+        (parameter_list)
+        (block 
+            (while_statement (bool)
+            (block (flow_control_statement))))))

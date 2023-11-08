@@ -164,24 +164,6 @@ Appendto variations
     (appendto (id) (nowarn)))
 
 ===
-While loop
-===
-
-func Fn() {
-    while (true) return(1);
-}
-
----
-
-(source_file 
-    (function_definition
-        (identifier)
-        (parameter_list)
-        (block 
-            (while_statement (bool)
-            (return_statement (number))))))
-
-===
 Simple code snippet
 ===
 

@@ -184,7 +184,10 @@ module.exports = grammar({
             '(',
             $._expression,
             ')',
-            optional($._statement),
+            choice(
+                $._statement,
+                $.block,
+            ),
         )),
 
         return_statement: $ => seq(
