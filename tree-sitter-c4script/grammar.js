@@ -293,6 +293,7 @@ module.exports = grammar({
         arrow_expression: $ => seq(
             $._expression,
             '->',
+            optional('~'),
             $.method_call,
         ),
 
