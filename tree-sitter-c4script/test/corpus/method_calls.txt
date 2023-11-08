@@ -16,6 +16,24 @@ func Fn() {
             (method_call (identifier) (args_list)))))
 
 ===
+Simple method call with omitted value
+===
+
+func Fn() {
+    Call(1,,2);
+}
+
+---
+
+(source_file
+    (function_definition
+        (identifier)
+        (parameter_list)
+        (block
+            (method_call (identifier) (args_list (number) (number))))))
+
+
+===
 Simple method call with specific id
 ===
 

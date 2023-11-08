@@ -268,7 +268,7 @@ module.exports = grammar({
         args_list: $ => seq(
             '(',
             optional($._expression),
-            repeat(seq(',', $._expression)),
+            repeat(seq(',', optional($._expression))),
             ')',
         ),
 
