@@ -22,7 +22,7 @@ function spawnAsync(cmd, args) {
 Promise.allSettled(fnames.map(async fname => {
     const fixturePath = path.join(fixturesDir, fname);
 
-    let log = 'Checking: ' + fixturePath;
+    let log = fixturePath;
 
     let code;
     try {
@@ -32,7 +32,7 @@ Promise.allSettled(fnames.map(async fname => {
         return -1;
     }
 
-    log += `Status: ${code}`;
+    log += ` Status: ${code}`;
     
     if (code === 0) {
         successful++;
@@ -42,7 +42,9 @@ Promise.allSettled(fnames.map(async fname => {
 })).then(results => {
 
     results.forEach(p => {
-        console.log(p.value);
+        if (!p.value.endsWith('0')) {
+            console.log(p.value);
+        }
     });
     
     console.log(`From ${fnames.length} total, ${successful} were successfully parsed`);
