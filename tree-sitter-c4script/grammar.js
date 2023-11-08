@@ -16,7 +16,10 @@ module.exports = grammar({
 
     word: $ => $.identifier,
 
-    conflicts: $ => [[$._for_iterators, $.var_scope]],
+    conflicts: $ => [
+        [$._for_iterators, $.var_scope],
+        [$.func_desc, $.map_access],
+    ],
 
     rules: {
 
@@ -122,6 +125,7 @@ module.exports = grammar({
         )),
 
         _statement: $ => choice(
+            $.func_desc,
             $.return_statement,
             $.if_statement,
             $.var_definition,
@@ -129,6 +133,12 @@ module.exports = grammar({
             $.for_statement,
             $.flow_control_statement,
             $._expression_statement,
+        ),
+
+        func_desc: $ => seq(
+            '[',
+            optional(repeat(/[^]]+/)),
+            ']',
         ),
 
         _expression_statement: $ => seq(

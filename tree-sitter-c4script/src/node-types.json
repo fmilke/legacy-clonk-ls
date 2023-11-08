@@ -323,6 +323,10 @@
           "named": true
         },
         {
+          "type": "func_desc",
+          "named": true
+        },
+        {
           "type": "id",
           "named": true
         },
@@ -433,6 +437,10 @@
           "named": true
         },
         {
+          "type": "func_desc",
+          "named": true
+        },
+        {
           "type": "id",
           "named": true
         },
@@ -490,6 +498,11 @@
         }
       ]
     }
+  },
+  {
+    "type": "func_desc",
+    "named": true,
+    "fields": {}
   },
   {
     "type": "function_definition",
@@ -579,6 +592,10 @@
         },
         {
           "type": "for_statement",
+          "named": true
+        },
+        {
+          "type": "func_desc",
           "named": true
         },
         {
@@ -1276,6 +1293,10 @@
           "named": true
         },
         {
+          "type": "func_desc",
+          "named": true
+        },
+        {
           "type": "id",
           "named": true
         },
@@ -1588,11 +1609,11 @@
   },
   {
     "type": "id",
-    "named": true
+    "named": false
   },
   {
     "type": "id",
-    "named": false
+    "named": true
   },
   {
     "type": "identifier",

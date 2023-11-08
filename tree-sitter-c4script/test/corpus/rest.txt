@@ -1,4 +1,30 @@
 ===
+Function description
+===
+
+func Activate() {
+    [Some Text |GetId=CLNK]
+    var a = ["Some Text", CLNK];
+}
+
+---
+
+(source_file 
+    (function_definition
+        (identifier)
+        (parameter_list)
+        (block
+            (func_desc)
+             (var_definition
+            (var_scope)
+            (var_assignment
+              (identifier)
+              (array
+                (string)
+                (id))))
+        )))
+
+===
 Include pragma
 ===
 

@@ -426,6 +426,10 @@
       "members": [
         {
           "type": "SYMBOL",
+          "name": "func_desc"
+        },
+        {
+          "type": "SYMBOL",
           "name": "return_statement"
         },
         {
@@ -451,6 +455,34 @@
         {
           "type": "SYMBOL",
           "name": "_expression_statement"
+        }
+      ]
+    },
+    "func_desc": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "["
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "REPEAT",
+              "content": {
+                "type": "PATTERN",
+                "value": "[^]]+"
+              }
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "STRING",
+          "value": "]"
         }
       ]
     },
@@ -2333,6 +2365,10 @@
     [
       "_for_iterators",
       "var_scope"
+    ],
+    [
+      "func_desc",
+      "map_access"
     ]
   ],
   "precedences": [],
