@@ -144,7 +144,7 @@ func SetPos(x,y) {
 Function with two typed arguments
 =====
 
-func GetOneAssignTheOther(bool x, &y) {
+func GetOneAssignTheOther(bool x, int & y) {
 }
 
 ---
