@@ -253,6 +253,7 @@ module.exports = grammar({
             $.builtin_constant,
             $.map,
             $.map_access,
+            $.translation,
         )),
 
         _expression2: $ => prec(2, choice(
@@ -270,6 +271,7 @@ module.exports = grammar({
             $.builtin_constant,
             $.map,
             $.map_access,
+            $.translation,
         )),
 
         method_call: $ => seq(
@@ -411,6 +413,8 @@ module.exports = grammar({
         id: $ => idRe,
 
         identifier: $ => /[_a-zA-Z][_a-zA-Z0-9]*/,
+
+        translation: $ => /\$[_a-zA-Z0-9]+\$/,
 
         number: $ => choice(
             /\d+/,

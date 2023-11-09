@@ -79,6 +79,10 @@
           "named": true
         },
         {
+          "type": "translation",
+          "named": true
+        },
+        {
           "type": "unary_expression",
           "named": true
         }
@@ -143,6 +147,10 @@
         },
         {
           "type": "string",
+          "named": true
+        },
+        {
+          "type": "translation",
           "named": true
         },
         {
@@ -213,6 +221,10 @@
           "named": true
         },
         {
+          "type": "translation",
+          "named": true
+        },
+        {
           "type": "unary_expression",
           "named": true
         }
@@ -277,6 +289,10 @@
         },
         {
           "type": "string",
+          "named": true
+        },
+        {
+          "type": "translation",
           "named": true
         },
         {
@@ -364,6 +380,10 @@
         },
         {
           "type": "string",
+          "named": true
+        },
+        {
+          "type": "translation",
           "named": true
         },
         {
@@ -478,6 +498,10 @@
         },
         {
           "type": "string",
+          "named": true
+        },
+        {
+          "type": "translation",
           "named": true
         },
         {
@@ -639,6 +663,10 @@
           "named": true
         },
         {
+          "type": "translation",
+          "named": true
+        },
+        {
           "type": "unary_expression",
           "named": true
         },
@@ -744,6 +772,10 @@
           "named": true
         },
         {
+          "type": "translation",
+          "named": true
+        },
+        {
           "type": "unary_expression",
           "named": true
         }
@@ -815,6 +847,10 @@
           "named": true
         },
         {
+          "type": "translation",
+          "named": true
+        },
+        {
           "type": "unary_expression",
           "named": true
         }
@@ -879,6 +915,10 @@
         },
         {
           "type": "string",
+          "named": true
+        },
+        {
+          "type": "translation",
           "named": true
         },
         {
@@ -1028,6 +1068,10 @@
           "named": true
         },
         {
+          "type": "translation",
+          "named": true
+        },
+        {
           "type": "unary_expression",
           "named": true
         }
@@ -1136,6 +1180,10 @@
           "named": true
         },
         {
+          "type": "translation",
+          "named": true
+        },
+        {
           "type": "unary_expression",
           "named": true
         }
@@ -1200,6 +1248,10 @@
         },
         {
           "type": "string",
+          "named": true
+        },
+        {
+          "type": "translation",
           "named": true
         },
         {
@@ -1339,6 +1391,10 @@
         },
         {
           "type": "string",
+          "named": true
+        },
+        {
+          "type": "translation",
           "named": true
         },
         {
@@ -1691,6 +1747,10 @@
   {
     "type": "string",
     "named": false
+  },
+  {
+    "type": "translation",
+    "named": true
   },
   {
     "type": "true",

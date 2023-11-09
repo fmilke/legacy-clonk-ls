@@ -947,6 +947,10 @@
           {
             "type": "SYMBOL",
             "name": "map_access"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "translation"
           }
         ]
       }
@@ -1012,6 +1016,10 @@
           {
             "type": "SYMBOL",
             "name": "map_access"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "translation"
           }
         ]
       }
@@ -2381,6 +2389,10 @@
     "identifier": {
       "type": "PATTERN",
       "value": "[_a-zA-Z][_a-zA-Z0-9]*"
+    },
+    "translation": {
+      "type": "PATTERN",
+      "value": "\\$[_a-zA-Z0-9]+\\$"
     },
     "number": {
       "type": "CHOICE",
