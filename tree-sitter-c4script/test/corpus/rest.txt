@@ -153,8 +153,8 @@ func GetOneAssignTheOther(bool x, int & y) {
     (function_definition
         (identifier)
         (parameter_list
-            (param (type) (identifier))
-            (param (type) (identifier)))
+            (param (identifier) (identifier))
+            (param (identifier) (identifier)))
         (block)))
 
 
@@ -229,3 +229,18 @@ func & GetX() {
         (parameter_list)
         (block
             (return_statement (number)))))
+
+===
+Parameter name matches keyword
+===
+
+func GetX(id) {
+}
+
+---
+
+(source_file 
+    (function_definition
+        (identifier)
+        (parameter_list (param (identifier)))
+        (block)))

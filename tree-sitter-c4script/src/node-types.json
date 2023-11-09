@@ -979,10 +979,6 @@
         {
           "type": "identifier",
           "named": true
-        },
-        {
-          "type": "type",
-          "named": true
         }
       ]
     }
@@ -1111,11 +1107,6 @@
   },
   {
     "type": "string",
-    "named": true,
-    "fields": {}
-  },
-  {
-    "type": "type",
     "named": true,
     "fields": {}
   },

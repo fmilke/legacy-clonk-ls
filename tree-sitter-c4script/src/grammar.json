@@ -258,6 +258,40 @@
       ]
     },
     "param": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_param_with_type"
+        }
+      ]
+    },
+    "_param": {
+      "type": "PREC_RIGHT",
+      "value": 0,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "STRING",
+                "value": "&"
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
+          },
+          {
+            "type": "SYMBOL",
+            "name": "identifier"
+          }
+        ]
+      }
+    },
+    "_param_with_type": {
       "type": "SEQ",
       "members": [
         {
@@ -265,7 +299,7 @@
           "members": [
             {
               "type": "SYMBOL",
-              "name": "type"
+              "name": "identifier"
             },
             {
               "type": "BLANK"
@@ -2481,6 +2515,10 @@
     [
       "func_desc",
       "map_access"
+    ],
+    [
+      "_param",
+      "_param_with_type"
     ]
   ],
   "precedences": [],

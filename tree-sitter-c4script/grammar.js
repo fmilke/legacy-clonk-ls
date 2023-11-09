@@ -3,7 +3,7 @@ const idRe = /[_A-Z0-9]{4}/;
 /*
 TODO:
 - double check block vs map precedence
-- ["asd" | "sdf"] syntax at function start
+- remove types
 */
 
 module.exports = grammar({
@@ -75,8 +75,8 @@ module.exports = grammar({
             ')',
         ),
 
-        param: $ => seq(
-            optional($.type),
+        param: $ => choice(
+            optional(field('type', $.identifier)),
             optional('&'),
             $.identifier,
         ),
