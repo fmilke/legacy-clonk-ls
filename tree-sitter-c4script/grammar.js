@@ -36,6 +36,7 @@ module.exports = grammar({
         function_definition: $ => seq(
             optional(field("visibility", $.visibility)),
             'func',
+            optional('&'),
             field("name", $.identifier),
             $.parameter_list,
             field("block", $.block),

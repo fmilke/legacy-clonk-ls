@@ -211,4 +211,21 @@ public func Activate() {
                 (identifier)
                 (parameter_list)
                 (block
-                    (return_statement (number)))))
+                (return_statement (number)))))
+
+===
+Function returing address
+===
+
+func & GetX() {
+    return 0xfff123;
+}
+
+---
+
+(source_file 
+    (function_definition
+        (identifier)
+        (parameter_list)
+        (block
+            (return_statement (number)))))
