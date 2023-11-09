@@ -2367,8 +2367,17 @@
       "value": "[_a-zA-Z][_a-zA-Z0-9]*"
     },
     "number": {
-      "type": "PATTERN",
-      "value": "\\d+"
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "PATTERN",
+          "value": "\\d+"
+        },
+        {
+          "type": "PATTERN",
+          "value": "0x[0-9a-fA-F]+"
+        }
+      ]
     },
     "bool": {
       "type": "CHOICE",

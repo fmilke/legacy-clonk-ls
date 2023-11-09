@@ -924,6 +924,11 @@
     "fields": {}
   },
   {
+    "type": "number",
+    "named": true,
+    "fields": {}
+  },
+  {
     "type": "param",
     "named": true,
     "fields": {},
@@ -1617,11 +1622,11 @@
   },
   {
     "type": "id",
-    "named": false
+    "named": true
   },
   {
     "type": "id",
-    "named": true
+    "named": false
   },
   {
     "type": "identifier",
@@ -1658,10 +1663,6 @@
   {
     "type": "nowarn",
     "named": false
-  },
-  {
-    "type": "number",
-    "named": true
   },
   {
     "type": "object",
