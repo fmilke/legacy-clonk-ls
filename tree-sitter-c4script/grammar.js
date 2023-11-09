@@ -133,6 +133,7 @@ module.exports = grammar({
             $.for_statement,
             $.flow_control_statement,
             $._expression_statement,
+            ';',
         ),
 
         func_desc: $ => seq(
