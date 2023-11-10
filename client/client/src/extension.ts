@@ -19,15 +19,27 @@ export function activate(context: ExtensionContext) {
 
 	const executableName = process.platform === 'win32' ? 'legacy-clonk-ls.exe' : 'legacy-clonk-ls';
 
-	// TODO: Use different path in development
 	const pathToBin = context.asAbsolutePath(
 		path.join('client', 'out', executableName)
 	);
 
+	const pathToBinInDebug = context.asAbsolutePath(
+		path.join('..', 'server', 'target', 'debug', executableName)
+	);
+
+	const a = /asd/;
+
 	const serverOptions: ServerOptions = {
-		command: pathToBin,
-		args: [],
-		transport: TransportKind.stdio,
+		run: {
+			command: pathToBin,
+			args: [],
+			transport: TransportKind.stdio,
+		},
+		debug: {
+			command: pathToBinInDebug,
+			args: [],
+			transport: TransportKind.stdio,
+		},
 	};
 
 	const clientOptions: LanguageClientOptions = {

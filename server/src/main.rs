@@ -23,6 +23,8 @@ pub struct TokenTypes {
     parameter: u32,
     method: u32,
     function: u32,
+    parameterType: u32,
+    bool: u32,
 }
 
 #[derive(Debug)]
@@ -37,6 +39,14 @@ impl Document {
         Document { url, tree }
     }
 }
+
+struct OwnSemanticTokenType;
+impl OwnSemanticTokenType {
+    const PARAMETER_TYPE: SemanticTokenType = SemanticTokenType::new("parameterType");
+    const ID: SemanticTokenType = SemanticTokenType::new("id");
+    const BOOL: SemanticTokenType = SemanticTokenType::new("bool");
+}
+
 
 struct Backend {
     client: Client,
@@ -72,6 +82,9 @@ impl Backend {
                 SemanticTokenType::PARAMETER,
                 SemanticTokenType::METHOD,
                 SemanticTokenType::FUNCTION,
+                OwnSemanticTokenType::PARAMETER_TYPE,
+                OwnSemanticTokenType::ID,
+                OwnSemanticTokenType::BOOL,
             ],
             token_modifiers: vec![],
         };
@@ -82,13 +95,15 @@ impl Backend {
             number: 2,
             pragma_strict: 3,
             appendto: 3,
-            id: 4,
+            id: 10,
             var_scope: 4,
             nil: 4,
             keyword: 4,
             parameter: 6,
             method: 7,
             function: 8,
+            parameterType: 9,
+            bool: 11,
         };
 
         Some((lut, legend))
@@ -158,8 +173,6 @@ impl LanguageServer for Backend {
             .log_message(MessageType::INFO, "parsed capabilities...")
             .await;
 
-        // TODO: compare with client capabilities
-
         let mut semantic_tokens_capabilities: Option<SemanticTokensServerCapabilities> = None;
         
         if let Some((lut, legend)) = self.parse_semantic_tokens_capabilities(&params) {
@@ -183,7 +196,6 @@ impl LanguageServer for Backend {
             capabilities: ServerCapabilities {
                 semantic_tokens_provider: semantic_tokens_capabilities,
                 text_document_sync: Some(text_document_sync_capabilities),
-                completion_provider: Some(CompletionOptions::default()),
                 ..Default::default()
             },
             ..Default::default()

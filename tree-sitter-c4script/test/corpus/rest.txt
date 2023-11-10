@@ -244,3 +244,20 @@ func GetX(id) {
         (identifier)
         (parameter_list (param (identifier)))
         (block)))
+
+===
+Prioritize number over ID
+===
+
+func GetX() {
+    return 1234;
+}
+
+---
+
+(source_file 
+    (function_definition
+        (identifier)
+        (parameter_list)
+        (block
+            (return_statement (number)))))

@@ -142,6 +142,10 @@ fn collect_tokens_step(
                     if let Some(ref child) = node.child(0) {
                         add_token(ctx, ctx.token_types.var_scope, child);
                     }
+
+                    if let Some(ref child) = node.child_by_field_name("const") {
+                        add_token(ctx, ctx.token_types.keyword, child);
+                    }
                 },
                 "function_definition" => {
                     let mut idx_of_func = 0;
@@ -173,13 +177,12 @@ fn collect_tokens_step(
                     }
                 },
                 "method_call" => {
-
                     if let Some(name) = node.child_by_field_name("name") {
                         add_token(
                             ctx,
                             ctx.token_types.method,
                             &name,
-                        );  
+                        );
                     }
                 },
                 "string" => {
@@ -197,24 +200,19 @@ fn collect_tokens_step(
                     );
                 },
                 "param" => {
-                    // First child is type and optional
-                    if node.child_count() > 1 {
+                    if let Some(child) = node.child_by_field_name("type") {
                         add_token(
                             ctx,
-                            ctx.token_types.keyword,
-                            &node.child(0).unwrap(),
+                            ctx.token_types.parameterType,
+                            &child,
                         );
+                    }
 
+                    if let Some(child) = node.child_by_field_name("name") {
                         add_token(
                             ctx,
                             ctx.token_types.parameter,
-                            &node.child(1).unwrap(),
-                        );
-                    } else {
-                        add_token(
-                            ctx,
-                            ctx.token_types.parameter,
-                            &node.child(0).unwrap(),
+                            &child,
                         );
                     }
                 },
@@ -256,7 +254,7 @@ fn collect_tokens_step(
                 "bool" => {
                     add_token(
                         ctx,
-                        ctx.token_types.keyword,
+                        ctx.token_types.bool,
                         &node,
                     );
                 },
@@ -345,11 +343,22 @@ mod tests {
         parser.set_language(tree_sitter_c4script::language()).expect("Loading c4scrpt grammar");
 
         let tree = parser.parse("//comment", None).unwrap();
-        // let tree = parser.parse("local name = \"Twonky\";", None).unwrap();
 
-        let errors = collect_tokens(&tree, TokenTypes::default());
+        let tokens = collect_tokens(&tree, TokenTypes::default());
 
-        assert!(errors.len() > 0);
+        assert!(tokens.len() > 0);
+    }
+
+    #[test]
+    fn should_not_crash_for_method_call_on_id() {
+        let mut parser = Parser::new();
+        parser.set_language(tree_sitter_c4script::language()).expect("Loading c4scrpt grammar");
+
+        let tree = parser.parse("func GetX() { CLNK::Explode(); }", None).unwrap();
+
+        let tokens = collect_tokens(&tree, TokenTypes::default());
+
+        assert!(tokens.len() > 0);
     }
 
     #[test]

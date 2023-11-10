@@ -971,16 +971,27 @@
   {
     "type": "param",
     "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "identifier",
-          "named": true
-        }
-      ]
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      },
+      "type": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
     }
   },
   {
@@ -1255,7 +1266,18 @@
   {
     "type": "var_definition",
     "named": true,
-    "fields": {},
+    "fields": {
+      "const": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "const",
+            "named": true
+          }
+        ]
+      }
+    },
     "children": {
       "multiple": true,
       "required": true,
@@ -1616,18 +1638,6 @@
     "named": false
   },
   {
-    "type": "any",
-    "named": false
-  },
-  {
-    "type": "array",
-    "named": false
-  },
-  {
-    "type": "bool",
-    "named": false
-  },
-  {
     "type": "break",
     "named": false
   },
@@ -1637,7 +1647,7 @@
   },
   {
     "type": "const",
-    "named": false
+    "named": true
   },
   {
     "type": "continue",
@@ -1672,10 +1682,6 @@
     "named": true
   },
   {
-    "type": "id",
-    "named": false
-  },
-  {
     "type": "identifier",
     "named": true
   },
@@ -1688,15 +1694,7 @@
     "named": false
   },
   {
-    "type": "int",
-    "named": false
-  },
-  {
     "type": "local",
-    "named": false
-  },
-  {
-    "type": "map",
     "named": false
   },
   {
@@ -1709,10 +1707,6 @@
   },
   {
     "type": "nowarn",
-    "named": false
-  },
-  {
-    "type": "object",
     "named": false
   },
   {
@@ -1733,10 +1727,6 @@
   },
   {
     "type": "static",
-    "named": false
-  },
-  {
-    "type": "string",
     "named": false
   },
   {

@@ -3,7 +3,6 @@ const idRe = /[_A-Z0-9]{4}/;
 /*
 TODO:
 - double check block vs map precedence
-- remove types
 */
 
 module.exports = grammar({
@@ -49,11 +48,13 @@ module.exports = grammar({
 
         var_definition: $ => seq(
             $.var_scope,
-            optional('const'),
+            optional(field('const', $.const)),
             $.var_assignment,
             repeat(seq(',', $.var_assignment)),
             ';',
         ),
+
+        const: $ => 'const',
 
         var_definition_inline: $ => seq(
             $.var_scope,
@@ -75,10 +76,10 @@ module.exports = grammar({
             ')',
         ),
 
-        param: $ => choice(
+        param: $ => seq(
             optional(field('type', $.identifier)),
             optional('&'),
-            $.identifier,
+            field('name', $.identifier),
         ),
 
         pragma_strict: $ => choice(
@@ -106,17 +107,6 @@ module.exports = grammar({
             'var',
             'local',
             'static',
-        ),
-
-        type: $ => choice(
-            'int',
-            'bool',
-            'id',
-            'object',
-            'string',
-            'array',
-            'map',
-            'any',
         ),
 
         block: $ => prec(2, seq(
@@ -275,7 +265,7 @@ module.exports = grammar({
         )),
 
         method_call: $ => seq(
-            optional(seq($.id, '::')),
+            optional(seq(field('id', $.id), '::')),
             field('name', $.identifier),
             $.args_list,
         ),

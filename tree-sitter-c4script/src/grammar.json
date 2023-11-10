@@ -132,8 +132,12 @@
           "type": "CHOICE",
           "members": [
             {
-              "type": "STRING",
-              "value": "const"
+              "type": "FIELD",
+              "name": "const",
+              "content": {
+                "type": "SYMBOL",
+                "name": "const"
+              }
             },
             {
               "type": "BLANK"
@@ -165,6 +169,10 @@
           "value": ";"
         }
       ]
+    },
+    "const": {
+      "type": "STRING",
+      "value": "const"
     },
     "var_definition_inline": {
       "type": "SEQ",
@@ -258,48 +266,18 @@
       ]
     },
     "param": {
-      "type": "CHOICE",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "_param_with_type"
-        }
-      ]
-    },
-    "_param": {
-      "type": "PREC_RIGHT",
-      "value": 0,
-      "content": {
-        "type": "SEQ",
-        "members": [
-          {
-            "type": "CHOICE",
-            "members": [
-              {
-                "type": "STRING",
-                "value": "&"
-              },
-              {
-                "type": "BLANK"
-              }
-            ]
-          },
-          {
-            "type": "SYMBOL",
-            "name": "identifier"
-          }
-        ]
-      }
-    },
-    "_param_with_type": {
       "type": "SEQ",
       "members": [
         {
           "type": "CHOICE",
           "members": [
             {
-              "type": "SYMBOL",
-              "name": "identifier"
+              "type": "FIELD",
+              "name": "type",
+              "content": {
+                "type": "SYMBOL",
+                "name": "identifier"
+              }
             },
             {
               "type": "BLANK"
@@ -319,8 +297,12 @@
           ]
         },
         {
-          "type": "SYMBOL",
-          "name": "identifier"
+          "type": "FIELD",
+          "name": "name",
+          "content": {
+            "type": "SYMBOL",
+            "name": "identifier"
+          }
         }
       ]
     },
@@ -411,43 +393,6 @@
         {
           "type": "STRING",
           "value": "static"
-        }
-      ]
-    },
-    "type": {
-      "type": "CHOICE",
-      "members": [
-        {
-          "type": "STRING",
-          "value": "int"
-        },
-        {
-          "type": "STRING",
-          "value": "bool"
-        },
-        {
-          "type": "STRING",
-          "value": "id"
-        },
-        {
-          "type": "STRING",
-          "value": "object"
-        },
-        {
-          "type": "STRING",
-          "value": "string"
-        },
-        {
-          "type": "STRING",
-          "value": "array"
-        },
-        {
-          "type": "STRING",
-          "value": "map"
-        },
-        {
-          "type": "STRING",
-          "value": "any"
         }
       ]
     },
@@ -2515,10 +2460,6 @@
     [
       "func_desc",
       "map_access"
-    ],
-    [
-      "_param",
-      "_param_with_type"
     ]
   ],
   "precedences": [],

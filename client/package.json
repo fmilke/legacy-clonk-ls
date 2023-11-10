@@ -102,7 +102,28 @@
 				},
 				"configuration": "./c4script-language-configuration.json"
 			}
-		]
+		],
+		"semanticTokenScopes": [{
+			"language": "c4script",
+			"scopes": {
+				"parameterType": ["support.type.primitive", "meta.type.annotation"],
+				"id": ["variable.language.this"],
+				"bool": ["constant.language.boolean"]
+			}
+		}],
+		"semanticTokenTypes": [{
+			"description": "Type annotation for parameters",
+			"id": "parameterType",
+			"superType": "type"
+		}, {
+			"description": "IDs in C4Script",
+			"id": "id",
+			"superType": "keyword"
+		}, {
+			"description": "Booleans",
+			"id": "bool",
+			"superType": "keyword"
+		}]
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",

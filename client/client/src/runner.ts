@@ -8,7 +8,6 @@ export class ScenarioRunner {
     
     public run(pathToScenario: string, outputChannel: OutputChannel) {
         const pathToExecutable = this.getPathToGameExecutable();
-
         if (!pathToExecutable) {
             window.showInformationMessage('Path to Legacy Clonk executable is not set. Please update your settings.');
             return;
