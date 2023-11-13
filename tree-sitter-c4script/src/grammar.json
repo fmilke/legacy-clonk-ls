@@ -1013,8 +1013,12 @@
               "type": "SEQ",
               "members": [
                 {
-                  "type": "SYMBOL",
-                  "name": "id"
+                  "type": "FIELD",
+                  "name": "id",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "id"
+                  }
                 },
                 {
                   "type": "STRING",
@@ -1036,8 +1040,12 @@
           }
         },
         {
-          "type": "SYMBOL",
-          "name": "args_list"
+          "type": "FIELD",
+          "name": "args",
+          "content": {
+            "type": "SYMBOL",
+            "name": "args_list"
+          }
         }
       ]
     },

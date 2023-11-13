@@ -932,6 +932,26 @@
     "type": "method_call",
     "named": true,
     "fields": {
+      "args": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "args_list",
+            "named": true
+          }
+        ]
+      },
+      "id": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "id",
+            "named": true
+          }
+        ]
+      },
       "name": {
         "multiple": false,
         "required": true,
@@ -942,20 +962,6 @@
           }
         ]
       }
-    },
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "args_list",
-          "named": true
-        },
-        {
-          "type": "id",
-          "named": true
-        }
-      ]
     }
   },
   {

@@ -12,9 +12,9 @@
 #define ALIAS_COUNT 0
 #define TOKEN_COUNT 91
 #define EXTERNAL_TOKEN_COUNT 0
-#define FIELD_COUNT 5
+#define FIELD_COUNT 7
 #define MAX_ALIAS_SEQUENCE_LENGTH 7
-#define PRODUCTION_ID_COUNT 11
+#define PRODUCTION_ID_COUNT 12
 
 enum {
   sym_identifier = 1,
@@ -1029,17 +1029,21 @@ static const TSSymbolMetadata ts_symbol_metadata[] = {
 };
 
 enum {
-  field_block = 1,
-  field_const = 2,
-  field_name = 3,
-  field_type = 4,
-  field_visibility = 5,
+  field_args = 1,
+  field_block = 2,
+  field_const = 3,
+  field_id = 4,
+  field_name = 5,
+  field_type = 6,
+  field_visibility = 7,
 };
 
 static const char * const ts_field_names[] = {
   [0] = NULL,
+  [field_args] = "args",
   [field_block] = "block",
   [field_const] = "const",
+  [field_id] = "id",
   [field_name] = "name",
   [field_type] = "type",
   [field_visibility] = "visibility",
@@ -1054,8 +1058,9 @@ static const TSFieldMapSlice ts_field_map_slices[PRODUCTION_ID_COUNT] = {
   [6] = {.index = 7, .length = 2},
   [7] = {.index = 9, .length = 3},
   [8] = {.index = 12, .length = 2},
-  [9] = {.index = 14, .length = 3},
-  [10] = {.index = 17, .length = 1},
+  [9] = {.index = 14, .length = 2},
+  [10] = {.index = 16, .length = 3},
+  [11] = {.index = 19, .length = 3},
 };
 
 static const TSFieldMapEntry ts_field_map_entries[] = {
@@ -1079,13 +1084,18 @@ static const TSFieldMapEntry ts_field_map_entries[] = {
     {field_name, 2},
     {field_visibility, 0},
   [12] =
+    {field_args, 1},
+    {field_name, 0},
+  [14] =
     {field_name, 2},
     {field_type, 0},
-  [14] =
+  [16] =
     {field_block, 5},
     {field_name, 3},
     {field_visibility, 0},
-  [17] =
+  [19] =
+    {field_args, 3},
+    {field_id, 0},
     {field_name, 2},
 };
 
@@ -12683,10 +12693,10 @@ static const TSParseActionEntry ts_parse_actions[] = {
   [248] = {.entry = {.count = 1, .reusable = true}}, REDUCE(sym_map_access, 4),
   [250] = {.entry = {.count = 1, .reusable = false}}, REDUCE(sym_args_list, 3),
   [252] = {.entry = {.count = 1, .reusable = true}}, REDUCE(sym_args_list, 3),
-  [254] = {.entry = {.count = 1, .reusable = false}}, REDUCE(sym_method_call, 2, .production_id = 1),
-  [256] = {.entry = {.count = 1, .reusable = true}}, REDUCE(sym_method_call, 2, .production_id = 1),
-  [258] = {.entry = {.count = 1, .reusable = false}}, REDUCE(sym_method_call, 4, .production_id = 10),
-  [260] = {.entry = {.count = 1, .reusable = true}}, REDUCE(sym_method_call, 4, .production_id = 10),
+  [254] = {.entry = {.count = 1, .reusable = false}}, REDUCE(sym_method_call, 2, .production_id = 8),
+  [256] = {.entry = {.count = 1, .reusable = true}}, REDUCE(sym_method_call, 2, .production_id = 8),
+  [258] = {.entry = {.count = 1, .reusable = false}}, REDUCE(sym_method_call, 4, .production_id = 11),
+  [260] = {.entry = {.count = 1, .reusable = true}}, REDUCE(sym_method_call, 4, .production_id = 11),
   [262] = {.entry = {.count = 1, .reusable = false}}, REDUCE(sym_array, 4),
   [264] = {.entry = {.count = 1, .reusable = true}}, REDUCE(sym_array, 4),
   [266] = {.entry = {.count = 1, .reusable = false}}, REDUCE(sym_map, 3),
@@ -12900,8 +12910,8 @@ static const TSParseActionEntry ts_parse_actions[] = {
   [689] = {.entry = {.count = 1, .reusable = false}}, REDUCE(sym_appendto, 3),
   [691] = {.entry = {.count = 1, .reusable = true}}, REDUCE(sym_pragma_strict, 1),
   [693] = {.entry = {.count = 1, .reusable = false}}, REDUCE(sym_pragma_strict, 1),
-  [695] = {.entry = {.count = 1, .reusable = true}}, REDUCE(sym_function_definition, 6, .production_id = 9),
-  [697] = {.entry = {.count = 1, .reusable = false}}, REDUCE(sym_function_definition, 6, .production_id = 9),
+  [695] = {.entry = {.count = 1, .reusable = true}}, REDUCE(sym_function_definition, 6, .production_id = 10),
+  [697] = {.entry = {.count = 1, .reusable = false}}, REDUCE(sym_function_definition, 6, .production_id = 10),
   [699] = {.entry = {.count = 1, .reusable = true}}, REDUCE(sym_function_definition, 5, .production_id = 4),
   [701] = {.entry = {.count = 1, .reusable = false}}, REDUCE(sym_function_definition, 5, .production_id = 4),
   [703] = {.entry = {.count = 1, .reusable = true}}, REDUCE(sym_include, 2),
@@ -12973,7 +12983,7 @@ static const TSParseActionEntry ts_parse_actions[] = {
   [841] = {.entry = {.count = 1, .reusable = true}}, SHIFT(245),
   [843] = {.entry = {.count = 1, .reusable = true}}, SHIFT(227),
   [845] = {.entry = {.count = 1, .reusable = true}}, SHIFT(235),
-  [847] = {.entry = {.count = 1, .reusable = true}}, REDUCE(sym_param, 3, .production_id = 8),
+  [847] = {.entry = {.count = 1, .reusable = true}}, REDUCE(sym_param, 3, .production_id = 9),
   [849] = {.entry = {.count = 1, .reusable = true}}, REDUCE(sym_parameter_list, 3),
   [851] = {.entry = {.count = 1, .reusable = true}}, SHIFT(234),
   [853] = {.entry = {.count = 1, .reusable = true}}, REDUCE(sym_parameter_list, 4),

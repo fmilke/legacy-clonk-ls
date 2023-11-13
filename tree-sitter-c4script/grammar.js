@@ -267,7 +267,7 @@ module.exports = grammar({
         method_call: $ => seq(
             optional(seq(field('id', $.id), '::')),
             field('name', $.identifier),
-            $.args_list,
+            field('args', $.args_list),
         ),
 
         args_list: $ => seq(

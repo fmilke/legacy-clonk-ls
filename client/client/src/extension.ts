@@ -26,9 +26,7 @@ export function activate(context: ExtensionContext) {
 	const pathToBinInDebug = context.asAbsolutePath(
 		path.join('..', 'server', 'target', 'debug', executableName)
 	);
-
-	const a = /asd/;
-
+	
 	const serverOptions: ServerOptions = {
 		run: {
 			command: pathToBin,
@@ -36,8 +34,8 @@ export function activate(context: ExtensionContext) {
 			transport: TransportKind.stdio,
 		},
 		debug: {
-			command: pathToBinInDebug,
-			args: [],
+			command: '/home/fmi/source/rust/cptee/target/debug/cptee',
+			args: [pathToBinInDebug],
 			transport: TransportKind.stdio,
 		},
 	};

@@ -1,4 +1,5 @@
 use dashmap::DashMap;
+use highlighting::Highlighter;
 use std::sync::RwLock;
 use tokio;
 use tower_lsp::jsonrpc::Result;
@@ -23,7 +24,7 @@ pub struct TokenTypes {
     parameter: u32,
     method: u32,
     function: u32,
-    parameterType: u32,
+    parameter_type: u32,
     bool: u32,
 }
 
@@ -102,7 +103,7 @@ impl Backend {
             parameter: 6,
             method: 7,
             function: 8,
-            parameterType: 9,
+            parameter_type: 9,
             bool: 11,
         };
 
@@ -234,7 +235,7 @@ impl LanguageServer for Backend {
             _ => TokenTypes::default(),
         };
 
-        let tokens = highlighting::collect_tokens(&doc.tree, lut);
+        let tokens = Highlighter::collect_tokens(&doc.tree, lut);
         Ok(Some(SemanticTokensResult::Tokens(SemanticTokens {
             result_id: None,
             data: tokens,
@@ -287,5 +288,6 @@ async fn main() {
     }
     */
 
-    start_language_server().await;
+    start_language_server()
+        .await;
 }
