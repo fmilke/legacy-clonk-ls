@@ -34,8 +34,8 @@ export function activate(context: ExtensionContext) {
 			transport: TransportKind.stdio,
 		},
 		debug: {
-			command: '/home/fmi/source/rust/cptee/target/debug/cptee',
-			args: [pathToBinInDebug],
+			command: pathToBinInDebug,
+			args: [],
 			transport: TransportKind.stdio,
 		},
 	};

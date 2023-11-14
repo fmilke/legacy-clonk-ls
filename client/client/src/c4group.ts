@@ -14,6 +14,7 @@ export class C4Group  {
         this.output.appendLine(`Unpacking: ${pathToFolder}`);
         return this.execute([`${pathToFolder}`, C4Group.ARG_EXPLODE]);
     }
+    
 
     public pack(pathToFolder: string): Thenable<void> {
         this.output.appendLine(`Packing: ${pathToFolder}`);

@@ -23,7 +23,6 @@ pub struct TokenTypes {
     keyword: u32,
     parameter: u32,
     method: u32,
-    function: u32,
     parameter_type: u32,
     bool: u32,
 }
@@ -48,6 +47,7 @@ impl OwnSemanticTokenType {
     const BOOL: SemanticTokenType = SemanticTokenType::new("bool");
 }
 
+const NEGOTIATE_TOKENT_TYPES: bool = false;
 
 struct Backend {
     client: Client,
@@ -58,53 +58,68 @@ struct Backend {
 
 impl Backend {
     fn parse_semantic_tokens_capabilities(&self, _params: &InitializeParams) -> Option<(TokenTypes, SemanticTokensLegend)> {
-        // if let Some(ref text_document) = params.capabilities.text_document {
-            // let mut s = self.state.write().unwrap();
+        // These are guaranteed by lsp
+        let mut negotiated = vec![
+            SemanticTokenType::COMMENT,
+            SemanticTokenType::STRING,
+            SemanticTokenType::NUMBER,
+            SemanticTokenType::MACRO,
+            SemanticTokenType::KEYWORD,
+            SemanticTokenType::TYPE,
+            SemanticTokenType::PARAMETER,
+            SemanticTokenType::METHOD,
+        ];
 
-            // if let Some(ref semantic_tokens) = text_document.semantic_tokens {
-            //     let tts: &Vec<SemanticTokenType> = &semantic_tokens.token_types;
-
-            //     for (i, tt) in tts.iter().enumerate() {
-            //         if tt == &SemanticTokenType::COMMENT {
-            //             s.tokens.comment = i as u32;
-            //         }
-            //     }
-            // }
-        // }
-
-        let legend = SemanticTokensLegend {
-            token_types: vec![
-                SemanticTokenType::COMMENT,
-                SemanticTokenType::STRING,
-                SemanticTokenType::NUMBER,
-                SemanticTokenType::MACRO,
-                SemanticTokenType::KEYWORD,
-                SemanticTokenType::TYPE,
-                SemanticTokenType::PARAMETER,
-                SemanticTokenType::METHOD,
-                SemanticTokenType::FUNCTION,
-                OwnSemanticTokenType::PARAMETER_TYPE,
-                OwnSemanticTokenType::ID,
-                OwnSemanticTokenType::BOOL,
-            ],
-            token_modifiers: vec![],
-        };
-
-        let lut = TokenTypes {
+        let mut lut = TokenTypes {
             comment: 0,
             string: 1,
             number: 2,
             pragma_strict: 3,
             appendto: 3,
-            id: 10,
+            id: 4,
             var_scope: 4,
             nil: 4,
             keyword: 4,
             parameter: 6,
             method: 7,
-            function: 8,
-            parameter_type: 9,
-            bool: 11,
+            parameter_type: 5,
+            bool: 4,
+        };
+
+        // Set additional custom tokens
+        if NEGOTIATE_TOKENT_TYPES {
+            if let Some(ref doc) = _params.capabilities.text_document {
+                if let Some(ref tt) = doc.semantic_tokens {
+                    for t in &tt.token_types {
+                        if t == &OwnSemanticTokenType::PARAMETER_TYPE {
+                            lut.parameter_type = (negotiated.len()) as u32;
+                            negotiated.push(OwnSemanticTokenType::PARAMETER_TYPE);
+                        } else if t == &OwnSemanticTokenType::ID {
+                            lut.id = (negotiated.len()) as u32;
+                            negotiated.push(OwnSemanticTokenType::ID);
+                        } else if t == &OwnSemanticTokenType::BOOL {
+                            lut.bool = (negotiated.len()) as u32;
+                            negotiated.push(OwnSemanticTokenType::BOOL);
+                        }
+                    }
+                } else {
+                    return None;
+                }
+            } else {
+                return None;
+            }
+        } else {
+            lut.parameter_type = (negotiated.len()) as u32;
+            negotiated.push(OwnSemanticTokenType::PARAMETER_TYPE);
+            lut.id = (negotiated.len()) as u32;
+            negotiated.push(OwnSemanticTokenType::ID);
+            lut.bool = (negotiated.len()) as u32;
+            negotiated.push(OwnSemanticTokenType::BOOL);
+        }
+
+        let legend = SemanticTokensLegend {
+            token_types: negotiated,
+            token_modifiers: vec![],
         };
 
         Some((lut, legend))

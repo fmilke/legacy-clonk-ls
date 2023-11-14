@@ -55,6 +55,11 @@
 				}
 			}
 		},
+		"configurationDefaults": {
+			"[c4script]": {
+				"editor.semanticHighlighting.enabled": true
+			}
+		},
 		"commands": [
 			{
 				"command": "legacy-clonk-ext.unpackC4g",
