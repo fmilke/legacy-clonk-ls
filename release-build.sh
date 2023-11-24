@@ -1,5 +1,5 @@
-# This script does not any of the necessary dependencies for building
-# individual artifacts
+# This script does not install any of the necessary dependencies for
+# building individual artifacts
 
 set -x xtrace
 set -e
@@ -27,5 +27,6 @@ mv ../server/target/x86_64-pc-windows-gnu/release/legacy-clonk-ls.exe client/out
 mv ../server/target/x86_64-unknown-linux-gnu/release/legacy-clonk-ls client/out/
 
 # Step 5: Packaging and publishing
-# But these commands should better be isssued by hand
-
+# But these commands should better be isssued by hand:
+# vsce package
+# vsce publish
