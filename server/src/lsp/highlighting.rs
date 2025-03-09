@@ -1,8 +1,6 @@
 use log::debug;
-use tower_lsp::lsp_types::SemanticToken;
-use tree_sitter::{Tree, TreeCursor, Node};
-
-use crate::TokenTypes;
+use tower_lsp::lsp_types::SemanticToken; use tree_sitter::{Tree, TreeCursor, Node};
+use crate::lsp::token_types::TokenTypes;
 
 #[derive(Debug, Default)]
 struct Context {
@@ -366,8 +364,6 @@ impl Highlighter {
 mod tests {
 
     use tree_sitter::Parser;
-
-    use crate::TokenTypes;
 
     use super::*;
 

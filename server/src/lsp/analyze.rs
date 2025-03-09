@@ -18,7 +18,7 @@ pub fn collect_errors(tree: &Tree) -> Vec<SyntaxError> {
 
 fn collect_errors_step(
     cursor: &mut TreeCursor,
-    errors: &mut Vec<SyntaxError>,
+    errors: &mut Vec<SyntaxError>, 
 ) {
     loop {
         let node = cursor.node();

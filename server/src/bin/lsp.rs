@@ -1,31 +1,12 @@
 use dashmap::DashMap;
-use highlighting::Highlighter;
+use legacy_clonk_ls::lsp::token_types::TokenTypes;
+use legacy_clonk_ls::lsp::highlighting::Highlighter;
 use std::sync::RwLock;
 use tokio;
 use tower_lsp::jsonrpc::Result;
 use tower_lsp::lsp_types::*;
 use tower_lsp::{Client, LanguageServer, LspService, Server};
 use tree_sitter::{Parser, Tree, InputEdit, Point};
-
-// mod analyze;
-mod highlighting;
-
-#[derive(Debug, Default, Clone, Copy)]
-pub struct TokenTypes {
-    comment: u32,
-    number: u32,
-    string: u32,
-    pragma_strict: u32,
-    appendto: u32,
-    id: u32,
-    var_scope: u32,
-    nil: u32,
-    keyword: u32,
-    parameter: u32,
-    method: u32,
-    parameter_type: u32,
-    bool: u32,
-}
 
 #[derive(Debug)]
 struct Document {
@@ -55,6 +36,7 @@ struct Backend {
     token_types: RwLock<TokenTypes>,
     documents: DashMap<Url, Document>,
 }
+
 
 impl Backend {
     fn parse_semantic_tokens_capabilities(&self, _params: &InitializeParams) -> Option<(TokenTypes, SemanticTokensLegend)> {
