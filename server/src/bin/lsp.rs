@@ -1,25 +1,16 @@
 use dashmap::DashMap;
+use legacy_clonk_ls::core::embedding::Embedding;
+use legacy_clonk_ls::lsp::doc::Document;
+use legacy_clonk_ls::lsp::markdown::MarkdownInfo;
 use legacy_clonk_ls::lsp::token_types::TokenTypes;
 use legacy_clonk_ls::lsp::highlighting::Highlighter;
+use std::fs::OpenOptions;
 use std::sync::RwLock;
 use tokio;
 use tower_lsp::jsonrpc::Result;
 use tower_lsp::lsp_types::*;
 use tower_lsp::{Client, LanguageServer, LspService, Server};
-use tree_sitter::{Parser, Tree, InputEdit, Point};
-
-#[derive(Debug)]
-struct Document {
-    #[allow(dead_code)]
-    url: Url,
-    tree: Tree,
-}
-
-impl Document {
-    fn new(url: Url, tree: Tree) -> Self {
-        Document { url, tree }
-    }
-}
+use tree_sitter::{Parser, InputEdit, Point};
 
 struct OwnSemanticTokenType;
 impl OwnSemanticTokenType {
@@ -35,6 +26,7 @@ struct Backend {
                 
     token_types: RwLock<TokenTypes>,
     documents: DashMap<Url, Document>,
+    embedding: Embedding,
 }
 
 
@@ -113,8 +105,8 @@ impl Backend {
             .set_language(tree_sitter_c4script::language())
             .expect("Loading c4scrpt grammar");
 
-        if let Some(tree) = parser.parse(contents, None) {
-            let doc = Document::new(uri.clone(), tree);
+        if let Some(tree) = parser.parse(&contents, None) {
+            let doc = Document::new(uri.clone(), tree, contents);
             self.documents.insert(uri, doc);
             Ok(())
         } else {
@@ -187,6 +179,8 @@ impl LanguageServer for Backend {
             }
         }
 
+        MarkdownInfo::from_cabpilities(&params.capabilities);
+
         let text_document_sync_capabilities =
             TextDocumentSyncCapability::Kind(TextDocumentSyncKind::FULL);
 
@@ -194,6 +188,11 @@ impl LanguageServer for Backend {
             capabilities: ServerCapabilities {
                 semantic_tokens_provider: semantic_tokens_capabilities,
                 text_document_sync: Some(text_document_sync_capabilities),
+                hover_provider: Some(HoverProviderCapability::Simple(true)),
+                signature_help_provider: Some(SignatureHelpOptions {
+                    //trigger_characters: Some(vec![String::from("(")]),
+                    ..Default::default()
+                }),
                 ..Default::default()
             },
             ..Default::default()
@@ -260,6 +259,40 @@ impl LanguageServer for Backend {
 
         Ok(None)
     }
+
+    async fn hover(&self, params: HoverParams) -> Result<Option<Hover>> {
+
+        self.client
+            .log_message(MessageType::INFO, "hover triggered...")
+            .await;
+
+        let uri = params.text_document_position_params.text_document.uri;
+        match self.documents.get(&uri) {
+            Some(doc) => {
+                if let Some(query) = doc.get_item_at_pos(params.text_document_position_params.position) {
+                    if let Some(text) = self.embedding.query_signature(query) {
+
+                        let markup = MarkupContent {
+                            value: text,
+                            kind: MarkupKind::Markdown,
+                        };
+
+                        let contents = HoverContents::Markup(markup);
+                        let response = Hover {
+                            contents,
+                            range: None,
+                        };
+
+                        return Ok(Some(response));
+                    }
+                }
+
+            },
+            _ => {},
+        }
+
+        Ok(None)
+    }
 }
 
 async fn start_language_server() {
@@ -271,6 +304,7 @@ async fn start_language_server() {
         token_types: RwLock::new(TokenTypes::default()),
         client,
         documents: DashMap::new(),
+        embedding: Embedding::new(),
     });
     Server::new(stdin, stdout, socket).serve(service).await;
 }
@@ -278,12 +312,18 @@ async fn start_language_server() {
 #[tokio::main]
 async fn main() {
 
-    // TODO: Properly configure logging
-    /*
-    if let Ok(file) = std::fs::File::create("/home/fmi/lsp-log") {
-        let _ = WriteLogger::init(log::LevelFilter::Trace, simplelog::Config::default(), file);
-    }
-    */
+    let options = OpenOptions::new()
+        .append(true)
+        .create(true)
+        .open("/home/fmi/log")
+        .unwrap();
+
+    let subscriber = tracing_subscriber::fmt()
+        .with_writer(options)
+        .with_file(true)
+        .finish();
+
+    tracing::subscriber::set_global_default(subscriber).unwrap();
 
     start_language_server()
         .await;

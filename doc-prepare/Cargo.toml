@@ -1,0 +1,9 @@
+[package]
+name = "doc-prepare"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+anyhow = "1.0.97"
+serde = { version = "1.0.219", features = [ "derive" ] }
+serde_xml = "0.9.1"

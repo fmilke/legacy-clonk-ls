@@ -26,6 +26,9 @@ pub fn parse_file(file_id: &FileId) -> anyhow::Result<(Tree, Vec<u8>)> {
     parser
         .set_language(tree_sitter_c4script::language())?;
 
-    parser.parse(&content, None).context("Could not parse file").map(|v| (v, content))
+    parser
+        .parse(&content, None)
+        .context("Could not parse file")
+        .map(|v| (v, content))
 }
 

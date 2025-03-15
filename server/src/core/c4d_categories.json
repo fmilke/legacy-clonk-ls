@@ -1,0 +1,152 @@
+[
+  {
+    "value": "1",
+    "dataType": "int",
+    "identifier": "C4D_StaticBack",
+    "description": "Immovable background object."
+  },
+  {
+    "value": "2",
+    "dataType": "int",
+    "identifier": "C4D_Structure",
+    "description": "Building."
+  },
+  {
+    "value": "4",
+    "dataType": "int",
+    "identifier": "C4D_Vehicle",
+    "description": "Vehicle."
+  },
+  {
+    "value": "8",
+    "dataType": "int",
+    "identifier": "C4D_Living",
+    "description": "A living being."
+  },
+  {
+    "value": "16",
+    "dataType": "int",
+    "identifier": "C4D_Object",
+    "description": "A smaller item."
+  },
+  {
+    "value": "32",
+    "dataType": "int",
+    "identifier": "C4D_Goal",
+    "description": "Game goal."
+  },
+  {
+    "value": "64",
+    "dataType": "int",
+    "identifier": "C4D_Environment",
+    "description": "Environmental control object."
+  },
+  {
+    "value": "128",
+    "dataType": "int",
+    "identifier": "C4D_SelectBuilding",
+    "description": "Scenario options: Object can be selected as a player-owned building at startup."
+  },
+  {
+    "value": "256",
+    "dataType": "int",
+    "identifier": "C4D_SelectVehicle",
+    "description": "Scenario options: Object can be selected as a player-owned vehicle at startup."
+  },
+  {
+    "value": "512",
+    "dataType": "int",
+    "identifier": "C4D_SelectMaterial",
+    "description": "Scenario options: Object can be selected as a player-owned material at startup."
+  },
+  {
+    "value": "1024",
+    "dataType": "int",
+    "identifier": "C4D_SelectKnowledge",
+    "description": "Scenario options: Object can be selected as an available construction plan."
+  },
+  {
+    "value": "2048",
+    "dataType": "int",
+    "identifier": "C4D_SelectHomebase",
+    "description": "Scenario options: Object can be selected as home base material."
+  },
+  {
+    "value": "4096",
+    "dataType": "int",
+    "identifier": "C4D_SelectAnimal",
+    "description": "Scenario options: Object can be selected as placed animal."
+  },
+  {
+    "value": "8192",
+    "dataType": "int",
+    "identifier": "C4D_SelectNest",
+    "description": "Scenario options: Object can be selected as a nest."
+  },
+  {
+    "value": "16384",
+    "dataType": "int",
+    "identifier": "C4D_SelectInEarth",
+    "description": "Scenario options: Object can be selected for underground placement."
+  },
+  {
+    "value": "32768",
+    "dataType": "int",
+    "identifier": "C4D_SelectVegetation",
+    "description": "Scenario options: Object can be selected as vegetation."
+  },
+  {
+    "value": "65536",
+    "dataType": "int",
+    "identifier": "C4D_TradeLiving",
+    "description": "A living being that can be sold at the home base."
+  },
+  {
+    "value": "131072",
+    "dataType": "int",
+    "identifier": "C4D_Magic",
+    "description": "A magic spell."
+  },
+  {
+    "value": "524288",
+    "dataType": "int",
+    "identifier": "C4D_Rule",
+    "description": "Rule control object."
+  },
+  {
+    "value": "1048576",
+    "dataType": "int",
+    "identifier": "C4D_Background",
+    "description": "Object is behind the landscape."
+  },
+  {
+    "value": "2097152",
+    "dataType": "int",
+    "identifier": "C4D_Parallax",
+    "description": "Object moves parallax according to Local 0 and 1. For more information see C4D_Parallax."
+  },
+  {
+    "value": "4194304",
+    "dataType": "int",
+    "identifier": "C4D_MouseSelect",
+    "description": "Object can be clicked with the mouse, causing a MouseSelection(int iPlr) callback in the object."
+  },
+  {
+    "value": "8388608",
+    "dataType": "int",
+    "identifier": "C4D_Foreground",
+    "description": "Object is always in the foreground, even before global particles."
+  },
+  {
+    "value": "16777216",
+    "dataType": "int",
+    "identifier": "C4D_MouseIgnore",
+    "description": "Object cannot be selected with the mouse."
+  },
+  {
+    "value": "33554432",
+    "dataType": "int",
+    "identifier": "C4D_IgnoreFoW",
+    "description": "Object is drawn above fog of war. Useful for creating status displays or gui elements using objects. From CR."
+  }
+]

@@ -1,13 +1,51 @@
 use anyhow::bail;
 use serde::{Deserialize, Serialize};
 use tree_sitter::Tree;
-use super::parse::FileId;
+use crate::core::kind::NODE_KIND_SOURCE_FILE;
+
+use super::{kind::NODE_KIND_FN_DEF, parse::FileId};
 
 const DEBUG_WALK: bool = true;
-const NODE_KIND_SOURCE_FILE: &str = "source_file";
-const NODE_KIND_FN_DEF: &str = "function_definition";
 
 pub struct SignatureCollector;
+
+#[derive(Debug, Deserialize)]
+pub enum C4DataType {
+    #[serde(rename(deserialize = "int"))]
+    Int,
+    #[serde(rename(deserialize = "id"))]
+    Id,
+    #[serde(rename(deserialize = "bool"))]
+    Bool,
+    #[serde(rename(deserialize = "string"))]
+    String,
+    #[serde(rename(deserialize = "object"))]
+    Object,
+    #[serde(rename(deserialize = "array"))]
+    Array,
+    #[serde(rename(deserialize = "any"))]
+    Any,
+}
+
+impl C4DataType {
+    pub fn moniker(&self) -> &'static str {
+        match self {
+            C4DataType::Int => "int",
+            C4DataType::Id => "id",
+            C4DataType::Bool => "bool",
+            C4DataType::Any => "any",
+            C4DataType::Array => "array",
+            C4DataType::Object => "object",
+            C4DataType::String => "string",
+        }
+    }
+}
+
+impl std::fmt::Display for C4DataType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{:?}", self)
+    }
+}
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct Param {
@@ -37,7 +75,7 @@ impl SignatureCollector {
         };
 
         let mut cursor = tree.walk();
-        if cursor.node().kind() != "source_file" {
+        if cursor.node().kind() != NODE_KIND_SOURCE_FILE {
             bail!("Expected node with kind '{}'", NODE_KIND_SOURCE_FILE);
         }
 

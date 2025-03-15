@@ -17,7 +17,7 @@ export function activate(context: ExtensionContext) {
 	const outputChannel = window.createOutputChannel('Legacy Clonk');
 	bindUi(context, outputChannel);
 
-	const executableName = process.platform === 'win32' ? 'legacy-clonk-ls.exe' : 'legacy-clonk-ls';
+	const executableName = process.platform === 'win32' ? 'lsp.exe' : 'lsp';
 
 	const pathToBin = context.asAbsolutePath(
 		path.join('client', 'out', executableName)
