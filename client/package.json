@@ -4,19 +4,23 @@
 	"author": "Fridjof Milke",
 	"license": "MIT",
 	"version": "1.0.4",
-	"keywords": ["C4Script", "Clonk", "Game Dev"],
+	"keywords": [
+		"C4Script",
+		"Clonk",
+		"Game Dev"
+	],
 	"icon": "icon.png",
 	"engines": {
 		"vscode": "^1.75.0"
 	},
-    "repository": "https://github.com/fmilke/legacy-clonk-ls",
+	"repository": "https://github.com/fmilke/legacy-clonk-ls",
 	"activationEvents": [
 		"workspaceContains:clonk",
 		"workspaceContains:clonk.exe"
 	],
 	"preview": true,
 	"displayName": "Legacy Clonk Extension",
-    "publisher": "LegacyClonkDev",
+	"publisher": "LegacyClonkDev",
 	"main": "./client/out/extension",
 	"contributes": {
 		"configuration": {
@@ -58,6 +62,9 @@
 		"configurationDefaults": {
 			"[c4script]": {
 				"editor.semanticHighlighting.enabled": true
+			},
+			"[c4ini]": {
+				"editor.semanticHighlighting.enabled": true
 			}
 		},
 		"commands": [
@@ -92,6 +99,21 @@
 		},
 		"languages": [
 			{
+				"id": "c4ini",
+				"aliases": [
+					"C4Ini"
+				],
+				"filenames": [
+					"Scenario.txt"
+				],
+				"firstLine": "/(Scenario)/",
+				"icon": {
+					"light": "./icons/c4script-light.png",
+					"dark": "./icons/c4script-dark.png"
+				},
+				"configuration": "./c4ini-language-configuration.json"
+			},
+			{
 				"id": "c4script",
 				"extensions": [
 					".c"
@@ -108,27 +130,52 @@
 				"configuration": "./c4script-language-configuration.json"
 			}
 		],
-		"semanticTokenScopes": [{
-			"language": "c4script",
-			"scopes": {
-				"parameterType": ["support.type.primitive", "meta.type.annotation"],
-				"id": ["variable.language.this"],
-				"bool": ["constant.language.boolean"]
+		"semanticTokenScopes": [
+			{
+				"language": "c4script",
+				"scopes": {
+					"parameterType": [
+						"support.type.primitive",
+						"meta.type.annotation"
+					],
+					"id": [
+						"variable.language.this"
+					],
+					"bool": [
+						"constant.language.boolean"
+					]
+				}
+			},
+			{
+				"language": "c4ini",
+				"scopes": {
+					"parameterType": [
+						"support.type.primitive",
+						"meta.type.annotation"
+					],
+					"id": [
+						"variable.language.this"
+					]
+				}
 			}
-		}],
-		"semanticTokenTypes": [{
-			"description": "Type annotation for parameters",
-			"id": "parameterType",
-			"superType": "type"
-		}, {
-			"description": "IDs in C4Script",
-			"id": "id",
-			"superType": "keyword"
-		}, {
-			"description": "Booleans",
-			"id": "bool",
-			"superType": "keyword"
-		}]
+		],
+		"semanticTokenTypes": [
+			{
+				"description": "Type annotation for parameters",
+				"id": "parameterType",
+				"superType": "type"
+			},
+			{
+				"description": "IDs in C4Script",
+				"id": "id",
+				"superType": "keyword"
+			},
+			{
+				"description": "Booleans",
+				"id": "bool",
+				"superType": "keyword"
+			}
+		]
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",

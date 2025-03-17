@@ -403,6 +403,7 @@ dependencies = [
  "anyhow",
  "cc",
  "dashmap",
+ "lazy_static",
  "log",
  "serde",
  "serde_json",
@@ -412,6 +413,7 @@ dependencies = [
  "tracing",
  "tracing-subscriber",
  "tree-sitter",
+ "tree-sitter-c4ini",
  "tree-sitter-c4script",
 ]
 
@@ -982,6 +984,14 @@ checksum = "e747b1f9b7b931ed39a548c1fae149101497de3c1fc8d9e18c62c1a66c683d3d"
 dependencies = [
  "cc",
  "regex",
+]
+
+[[package]]
+name = "tree-sitter-c4ini"
+version = "0.0.1"
+dependencies = [
+ "cc",
+ "tree-sitter",
 ]
 
 [[package]]

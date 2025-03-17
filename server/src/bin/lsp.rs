@@ -1,18 +1,19 @@
 use dashmap::DashMap;
 use legacy_clonk_ls::core::embedding::Embedding;
-use legacy_clonk_ls::lsp::doc::Document;
+use legacy_clonk_ls::lsp::doc::{DocType, Document};
 use legacy_clonk_ls::lsp::markdown::MarkdownInfo;
 use legacy_clonk_ls::lsp::token_types::TokenTypes;
-use legacy_clonk_ls::lsp::highlighting::Highlighter;
 use std::fs::OpenOptions;
 use std::sync::RwLock;
 use tokio;
 use tower_lsp::jsonrpc::Result;
 use tower_lsp::lsp_types::*;
 use tower_lsp::{Client, LanguageServer, LspService, Server};
-use tree_sitter::{Parser, InputEdit, Point};
+use tracing::info;
+use tree_sitter::{InputEdit, Point};
 
 struct OwnSemanticTokenType;
+
 impl OwnSemanticTokenType {
     const PARAMETER_TYPE: SemanticTokenType = SemanticTokenType::new("parameterType");
     const ID: SemanticTokenType = SemanticTokenType::new("id");
@@ -23,15 +24,17 @@ const NEGOTIATE_TOKENT_TYPES: bool = false;
 
 struct Backend {
     client: Client,
-                
+
     token_types: RwLock<TokenTypes>,
     documents: DashMap<Url, Document>,
     embedding: Embedding,
 }
 
-
 impl Backend {
-    fn parse_semantic_tokens_capabilities(&self, _params: &InitializeParams) -> Option<(TokenTypes, SemanticTokensLegend)> {
+    fn parse_semantic_tokens_capabilities(
+        &self,
+        _params: &InitializeParams,
+    ) -> Option<(TokenTypes, SemanticTokensLegend)> {
         // These are guaranteed by lsp
         let mut negotiated = vec![
             SemanticTokenType::COMMENT,
@@ -58,6 +61,7 @@ impl Backend {
             method: 7,
             parameter_type: 5,
             bool: 4,
+            operator: 0, // TODO
         };
 
         // Set additional custom tokens
@@ -100,13 +104,26 @@ impl Backend {
     }
 
     fn add_document(&self, uri: Url, contents: String) -> std::result::Result<(), String> {
-        let mut parser = Parser::new();
-        parser
-            .set_language(tree_sitter_c4script::language())
-            .expect("Loading c4scrpt grammar");
+        info!("add_document endpoint triggered. uri: {}", uri);
+
+        let doc_type;
+        match DocType::from_uri(&uri) {
+            Ok(dt) => {
+                doc_type = dt;
+            }
+            Err(e) => {
+                let s = e.to_string();
+                tracing::error!("could not get doctype from url: {}", &s);
+                return Err(s);
+            }
+        }
+
+        info!("detected doctype for document: {:?}", &doc_type);
+
+        let mut parser = doc_type.get_parser().expect("Could not load language");
 
         if let Some(tree) = parser.parse(&contents, None) {
-            let doc = Document::new(uri.clone(), tree, contents);
+            let doc = Document::new(uri.clone(), tree, contents, doc_type);
             self.documents.insert(uri, doc);
             Ok(())
         } else {
@@ -115,12 +132,14 @@ impl Backend {
     }
 
     fn change_document(&self, uri: Url, contents: String) -> std::result::Result<(), String> {
-        let mut parser = Parser::new();
-        parser
-            .set_language(tree_sitter_c4script::language())
-            .expect("Loading c4scrpt grammar");
-
         if let Some(ref mut doc) = self.documents.get_mut(&uri) {
+            tracing::info!(
+                "Changed document {}, having doc type {:?}",
+                &uri,
+                &doc.doc_type
+            );
+            let mut parser = doc.doc_type.get_parser().expect("Could not load language");
+
             let start_byte = doc.tree.root_node().start_byte();
             let old_end_byte = doc.tree.root_node().end_byte();
             let old_end_position = doc.tree.root_node().end_position();
@@ -131,12 +150,15 @@ impl Backend {
                 start_byte,
                 old_end_byte,
                 new_end_byte: contents.len(),
-                start_position: Point { row: 0, column: 0, },
+                start_position: Point { row: 0, column: 0 },
                 old_end_position,
-                new_end_position: Point { row: new_end_row, column: new_end_column, },
+                new_end_position: Point {
+                    row: new_end_row,
+                    column: new_end_column,
+                },
             });
 
-            if let Some(new_tree) = parser.parse(&contents, Some(&doc.tree)) {                
+            if let Some(new_tree) = parser.parse(&contents, Some(&doc.tree)) {
                 doc.tree = new_tree;
                 Ok(())
             } else {
@@ -164,14 +186,14 @@ impl LanguageServer for Backend {
             .await;
 
         let mut semantic_tokens_capabilities: Option<SemanticTokensServerCapabilities> = None;
-        
+
         if let Some((lut, legend)) = self.parse_semantic_tokens_capabilities(&params) {
             semantic_tokens_capabilities = Some(
                 SemanticTokensServerCapabilities::SemanticTokensOptions(SemanticTokensOptions {
                     full: Some(SemanticTokensFullOptions::Bool(true)),
                     legend,
                     ..SemanticTokensOptions::default()
-                })
+                }),
             );
 
             if let Ok(mut tt) = self.token_types.write() {
@@ -231,7 +253,8 @@ impl LanguageServer for Backend {
             _ => TokenTypes::default(),
         };
 
-        let tokens = Highlighter::collect_tokens(&doc.tree, lut);
+        let handler = doc.doc_type.get_handler();
+        let tokens = handler.collect_semantic_tokens(&doc.tree, lut, doc.source.as_ref());
         Ok(Some(SemanticTokensResult::Tokens(SemanticTokens {
             result_id: None,
             data: tokens,
@@ -261,7 +284,6 @@ impl LanguageServer for Backend {
     }
 
     async fn hover(&self, params: HoverParams) -> Result<Option<Hover>> {
-
         self.client
             .log_message(MessageType::INFO, "hover triggered...")
             .await;
@@ -269,34 +291,55 @@ impl LanguageServer for Backend {
         let uri = params.text_document_position_params.text_document.uri;
         match self.documents.get(&uri) {
             Some(doc) => {
-                if let Some(query) = doc.get_item_at_pos(params.text_document_position_params.position) {
-                    if let Some(text) = self.embedding.query_signature(query) {
+                let handler = doc.doc_type.get_handler();
+                if let Some(text) =
+                    handler.get_hover_text(&doc, params.text_document_position_params.position)
+                {
+                    let markup = MarkupContent {
+                        value: text,
+                        kind: MarkupKind::Markdown,
+                    };
 
-                        let markup = MarkupContent {
-                            value: text,
-                            kind: MarkupKind::Markdown,
-                        };
+                    let contents = HoverContents::Markup(markup);
+                    let response = Hover {
+                        contents,
+                        range: None,
+                    };
 
-                        let contents = HoverContents::Markup(markup);
-                        let response = Hover {
-                            contents,
-                            range: None,
-                        };
-
-                        return Ok(Some(response));
-                    }
+                    return Ok(Some(response));
                 }
-
-            },
-            _ => {},
+            }
+            _ => {}
         }
+        //match self.documents.get(&uri) {
+        //    Some(doc) => {
+        //        if let Some(query) =
+        //            doc.get_item_at_pos(params.text_document_position_params.position)
+        //        {
+        //            if let Some(text) = self.embedding.query_signature(query) {
+        //                let markup = MarkupContent {
+        //                    value: text,
+        //                    kind: MarkupKind::Markdown,
+        //                };
+
+        //                let contents = HoverContents::Markup(markup);
+        //                let response = Hover {
+        //                    contents,
+        //                    range: None,
+        //                };
+
+        //                return Ok(Some(response));
+        //            }
+        //        }
+        //    }
+        //    _ => {}
+        //}
 
         Ok(None)
     }
 }
 
 async fn start_language_server() {
-
     let stdin = tokio::io::stdin();
     let stdout = tokio::io::stdout();
 
@@ -311,7 +354,6 @@ async fn start_language_server() {
 
 #[tokio::main]
 async fn main() {
-
     let options = OpenOptions::new()
         .append(true)
         .create(true)
@@ -325,6 +367,5 @@ async fn main() {
 
     tracing::subscriber::set_global_default(subscriber).unwrap();
 
-    start_language_server()
-        .await;
+    start_language_server().await;
 }

@@ -1,0 +1,25 @@
+===
+Head section, scenario
+===
+
+[Head]
+Icon=19
+Title=New Scenario
+MaxPlayer=8
+Origin=Fantasy.c4f\Alchemy.c4s
+
+----
+
+(source_file 
+     (section
+        (section_name
+          (identifier))
+        (property
+          (joined_value))
+        (property
+          (joined_value))
+        (property
+          (joined_value))
+        (property
+          (joined_value)))
+)

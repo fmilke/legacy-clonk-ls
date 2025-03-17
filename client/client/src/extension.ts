@@ -44,7 +44,10 @@ export function activate(context: ExtensionContext) {
 		documentSelector: [{
 			scheme: 'file',
 			language: 'c4script',
-		}],
+		}, {
+			scheme: 'file',
+			language: 'c4ini',
+        }],
 	};
 
 	client = new LanguageClient(

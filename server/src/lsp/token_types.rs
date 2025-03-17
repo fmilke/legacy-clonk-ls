@@ -13,4 +13,5 @@ pub struct TokenTypes {
     pub method: u32,
     pub parameter_type: u32,
     pub bool: u32,
+    pub operator: u32,
 }

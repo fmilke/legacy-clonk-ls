@@ -1,8 +1,9 @@
+use anyhow::{anyhow, Context};
 use tower_lsp::lsp_types::{Position, Url};
 use tracing::info;
-use tree_sitter::{Point, Tree};
-
+use tree_sitter::{Language, Point, Tree};
 use crate::core::kind::NODE_KIND_FN_DEF;
+use super::{asset_handler::AssetHandler, scenario_txt_handler::ScenarioTxtHandler, script_handler::ScriptHandler};
 
 pub enum QueryableItem {
     Function(String),
@@ -16,11 +17,25 @@ pub struct Document {
     pub url: Url,
     pub tree: Tree,
     pub source: String,
+    pub doc_type: DocType,
 }
 
 impl Document {
-    pub fn new(url: Url, tree: Tree, source: String) -> Self {
-        Document { url, tree, source, }
+    pub fn new(url: Url, tree: Tree, source: String, doc_type: DocType) -> Self {
+        Document { url, tree, source, doc_type, }
+    }
+
+    pub fn get_node_at_pos(&self, pos: tower_lsp::lsp_types::Position) -> Option<tree_sitter::Node> {
+        let mut cursor = self.tree.walk();
+        let point = Document::point_to_pos(pos);
+
+        let mut child = cursor.goto_first_child_for_point(point);
+
+        while let Some(c) = cursor.goto_first_child_for_point(point) {
+            child = Some(c);
+        }
+
+        child.map(|_| cursor.node())
     }
 
     pub fn get_item_at_pos(&self, pos: Position) -> Option<QueryableItem> {
@@ -76,6 +91,68 @@ impl Document {
             row: pos.line as usize,
             column: pos.character as usize,
         }
+    }
+}
+
+#[derive(Debug, Clone, Copy)]
+pub enum DocType {
+    Script,
+    ScenarioTxt,
+}
+
+impl DocType {
+    pub fn from_uri(uri: &Url) -> anyhow::Result<Self> {
+        let file_name = uri
+            .path_segments()
+            .context("Url cannot be a base")?
+            .last()
+            .context("Could not extract file name")?;
+
+        let ext = file_name
+            .split('.')
+            .last()
+            .context("Could not get file extension")?;
+
+        match ext {
+            "c" => {
+                Ok(DocType::Script)
+            },
+            "txt" => {
+                match file_name {
+                    "Scenario.txt" => {
+                        Ok(DocType::ScenarioTxt)
+                    },
+                    _ => {
+                        Err(anyhow!("File extension '.{}' was recognized, but file name is unknown: {}", &ext, file_name))
+                    },
+                }
+            },
+            _ => {
+                Err(anyhow!("Unrecognized file extension: {}", &ext))
+            },
+        }
+    }
+
+    pub fn get_handler(&self) -> Box<dyn AssetHandler> {
+        match self {
+            DocType::Script => Box::new(ScriptHandler::default()),
+            DocType::ScenarioTxt => Box::new(ScenarioTxtHandler::default()),
+        }
+    }
+
+    pub fn get_language(&self) -> Language {
+        match self {
+            DocType::Script => tree_sitter_c4script::language(),
+            DocType::ScenarioTxt => tree_sitter_c4ini::language(),
+        }
+    }
+
+    pub fn get_parser(&self) -> Result<tree_sitter::Parser, tree_sitter::LanguageError> {
+        let mut parser = tree_sitter::Parser::new();
+        parser
+            .set_language(self.get_language())?;
+
+        Ok(parser)
     }
 }
 
