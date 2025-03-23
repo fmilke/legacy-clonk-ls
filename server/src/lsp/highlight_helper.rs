@@ -1,5 +1,4 @@
 use tower_lsp::lsp_types::SemanticToken;
-use tracing::debug;
 use tree_sitter::Node;
 
 use super::token_types::TokenTypes;
@@ -17,8 +16,6 @@ pub fn add_semantic_token(
     token_type: u32,
     node: &Node,
 ) {
-    debug!("Tokenizing node of type: {}", node.kind());
-
     let start = node.start_position();
     let mut start_row = start.row as u32;
     let start_col = start.column as u32;
@@ -80,9 +77,6 @@ pub fn add_semantic_token(
         ctx.last_start = 0;
 
     } else {
-        debug!("Start: {}, {}", start_row, start_col);
-        debug!("ctx: {}, {}", ctx.last_line, ctx.last_start);
-
         let (delta_line, delta_start) = if on_same_line {
             (0, start_col - ctx.last_start)
         } else {
@@ -172,9 +166,6 @@ pub fn add_semantic_token_at(
         ctx.last_start = 0;
 
     } else {
-        debug!("Start: {}, {}", start_row, start_col);
-        debug!("ctx: {}, {}", ctx.last_line, ctx.last_start);
-
         let (delta_line, delta_start) = if on_same_line {
             (0, start_col - ctx.last_start)
         } else {

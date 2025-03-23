@@ -1,6 +1,5 @@
 use tower_lsp::lsp_types::SemanticToken; use tree_sitter::{Tree, TreeCursor, Node};
-use crate::lsp::token_types::TokenTypes;
-use super::highlight_helper::{add_semantic_token, Context};
+use crate::lsp::{highlight_helper::{add_semantic_token, Context}, token_types::TokenTypes};
 
 pub struct Highlighter;
 

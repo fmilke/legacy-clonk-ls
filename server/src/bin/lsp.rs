@@ -1,7 +1,6 @@
 use dashmap::DashMap;
 use legacy_clonk_ls::core::embedding::Embedding;
 use legacy_clonk_ls::lsp::doc::{DocType, Document};
-use legacy_clonk_ls::lsp::markdown::MarkdownInfo;
 use legacy_clonk_ls::lsp::token_types::TokenTypes;
 use std::fs::OpenOptions;
 use std::sync::RwLock;
@@ -200,8 +199,6 @@ impl LanguageServer for Backend {
                 *tt = lut;
             }
         }
-
-        MarkdownInfo::from_cabpilities(&params.capabilities);
 
         let text_document_sync_capabilities =
             TextDocumentSyncCapability::Kind(TextDocumentSyncKind::FULL);
