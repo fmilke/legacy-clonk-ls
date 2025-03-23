@@ -305,29 +305,6 @@ impl LanguageServer for Backend {
             }
             _ => {}
         }
-        //match self.documents.get(&uri) {
-        //    Some(doc) => {
-        //        if let Some(query) =
-        //            doc.get_item_at_pos(params.text_document_position_params.position)
-        //        {
-        //            if let Some(text) = self.embedding.query_signature(query) {
-        //                let markup = MarkupContent {
-        //                    value: text,
-        //                    kind: MarkupKind::Markdown,
-        //                };
-
-        //                let contents = HoverContents::Markup(markup);
-        //                let response = Hover {
-        //                    contents,
-        //                    range: None,
-        //                };
-
-        //                return Ok(Some(response));
-        //            }
-        //        }
-        //    }
-        //    _ => {}
-        //}
 
         Ok(None)
     }
