@@ -281,9 +281,6 @@ impl LanguageServer for Backend {
     }
 
     async fn hover(&self, params: HoverParams) -> Result<Option<Hover>> {
-        self.client
-            .log_message(MessageType::INFO, "hover triggered...")
-            .await;
 
         let uri = params.text_document_position_params.text_document.uri;
         match self.documents.get(&uri) {
