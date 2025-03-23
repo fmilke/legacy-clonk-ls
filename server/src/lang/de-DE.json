@@ -1,0 +1,100 @@
+{
+  "scenario_txt": {
+    "head": {
+      "icon": "Standard-Icon des Szenarios. Siehe Szenarioeigenschaften im Menüsystem",
+      "title": "Titel des Szenarios. Wird durch die Einträge in Title.txt ersetzt. Maximal 512 Zeichen",
+      "version": "Vom Szenario benötigte Version der Engine",
+      "roundOptions": "0 oder 1. Freigabe der Szenarioeigenschaften im Menüsystem für andere Spieler",
+      "maxPlayer": "Integer Maximale Anzahl der Spieler",
+      "noInitialize": "Integer 0 oder 1. Bei 1 werden alle Objekte, die genau einmal erzeugt werden sollten, nicht platziert. Automatisch für Spielstände und gespeicherte Szenarien gesetzt, um eine erneute Erzeugung von Vegetation, Spielzielen und ähnlichem zu vermeiden. Es werden unter anderem die Werte Buildings, Vehicles, Material, Vegetation, InEarth und Animals ignoriert",
+      "missionAcces": "Zeichenfolge Szenario kann nur gestartet werden, wenn ein Spieler zuvor dieses Zugangspasswort in einem anderen Szenario erspielt hat. Siehe Scriptfunktion GainMissionAccess()",
+      "replay": "Wird von der Engine automatisch gesetzt, und markiert eine Aufnahme",
+      "film": "0 oder 1 und nur bei Aufnahmen. Bei 1 folgt die Sicht nur dem ersten Spieler und alle Spielerkontrollen werden ausgeblendet",
+      "forcedGfxMode": "0: Jede Engine möglich; 1: Nur NewGfx (OpenGL/D3D); 2: Nur OldGfx (8Bit-DDraw)"
+    },
+    "game": {
+      "rules": "Spielregeln",
+      "goals": "Spielziele",
+      "valueOverloads": "Liste der Definitionen, dessen Wert für diese Runde geändert sein soll. Die Menge gibt den neuen Wert an",
+      "foWColor": "Farbe des Fog of War",
+      "mode": "Veraltet. 0 Kooperativ, 1 Melee, 2 Teamwork-Melee",
+      "elimination": "Veraltet. Spielereliminierung durch 0 Verlust Captain, 1 Verlust Crew, 2 Verlust Flagge",
+      "cooperativeGoal": "Veraltet. Wert der Auswahl Spielziel im Menüsystem (0-4)",
+      "createObjects": "Veraltet. Spielziel: Diese Objekte müssen mindestens vorhanden sein",
+      "clearObjects": "Veraltet. Spielziel: Diese Objekte müssen auf x reduziert werden",
+      "clearMaterials": "Veraltet. Spielziel: Diese Materialien müssen auf x reduziert werden",
+      "baseFunctionality": "Bitmaske, die angibt, welche Funktionen eine Basis erfüllt. Siehe Basisfunktionalitäten.\n\nAb CR",
+      "baseRegenerateEnergyPrice": "Kosten, die aufgewendet werden, um einen Clonk in einer Basis um 100 Energiepunkte zu heilen. Standard ist 5; bei 0 ist die Heilung kostenlos. Ab CR."
+    },
+    "playerX": {
+      "wealth": "Startkapital",
+      "position": "Startposition in Koordinaten der ungezoomten Landkarte. Beide -1 für Zufall.",
+      "crew": "Art und Anzahl der Mannschaftsmitglieder",
+      "buildings": "Zu Spielbeginn vorhandene Gebäude",
+      "vehicles": "Zu Spielbeginn vorhandene Fahrzeuge",
+      "material": "Zu Spielbeginn vorhandenes Material",
+      "knowledge": "Vom Spieler erzeugbare Objekte",
+      "homeBaseMaterial": "Zu Spielbeginn in der Heimatbasis kaufbares Material",
+      "homeBaseProduction": "Nachproduktion von Material für die Heimatbasis",
+      "magic": "Zur Verfügung stehende Zauber. Sind keine Zauber angegeben, werden alle verfügbaren Zauber geladen (Abwärtskompatibilität zu älteren Szenarien)"
+    },
+    "landscape": {
+      "vegetation": "Vegetationstypen und relative Anteile.",
+      "vegetationLevel": "0-100. Menge Vegetation.",
+      "inEarth": "Typen und relative Anteile der Objekte im Erdreich.",
+      "inEarthLevel": "0-100. Menge Erdreich-Objekte.",
+      "sky": "Himmeltextur wie in der Graphics.c4g vorhanden (ohne Dateierweiterung).",
+      "skyFade": "Himmelfarbverlauf von RGB nach RGB. Werte von 0-255. Sind alle Werte 0, wird das Vorgabe-Blau der Clonk-Farbpalette verwendet.",
+      "bottomOpen": "0 oder 1. Legt fest, ob die Spielwelt unten offen ist.",
+      "topOpen": "0 oder 1. Legt fest, ob die Spielwelt oben offen ist.",
+      "leftOpen": "Öffnung des linken Randes bis zum Abstand in Pixel von der Oberkante.",
+      "rightOpen": "Öffnung des rechten Randes bis zum Abstand in Pixel von der Oberkante.",
+      "autoScanSideOpen": "0 oder 1. Bei 1 werden LeftOpen und RightOpen automatisch angepasst.",
+      "mapWidth": "Ausgangsbreite der dynamischen Karte.",
+      "mapHeight": "Ausgangshöhe der dynamischen Karte.",
+      "mapZoom": "Vergrößerungsfaktor der Karte auf die tatsächliche Spiellandschaft. Wert 10.",
+      "amplitude": "0-100 und Abweichung. Hügelhöhe bei dynamischen Karten.",
+      "phase": "0-100 und Abweichung. Hügelverschiebung bei dynamischen Karten.",
+      "period": "0-100 und Abweichung. Hügelabstand bei dynamischen Karten.",
+      "random": "0-100 und Abweichung. Zufallsabweichung bei dynamischen Karten.",
+      "material": "Material-Textur-Definition des Basismaterials (Erdreich) bei dynamischen Karten.",
+      "liquid": "Material-Textur-Definition der Flüssigkeit in dynamischen Karten.",
+      "liquidLevel": "0-100 und Abweichung. Flüssigkeitsstand in dynamischen Karten.",
+      "mapPlayerExtend": "0 oder 1. Legt fest, ob die dynamische Karte in der Breite angepasst wird.",
+      "layers": "Materialschichten im Erdreich bei dynamischen Karten.",
+      "exactLandscape": "0 oder 1. Gibt an, ob Landscape.bmp eine tatsächliche Spiellandschaft ist.",
+      "gravity": "10-200: Gravitation. 100 ist Standard.",
+      "noScan": "0 oder 1. Bei 1 werden keine Überprüfungen innerhalb der Landschaft durchgeführt, wie beispielsweise Schneeschmelze oder Festwerden von Lava in Vulkanen.",
+      "keepMapCreator": "0 oder 1. Bei 1 wird der interne MapCreator nicht nach dem Start entladen, so dass Befehle wie DrawDefMap zur Verfügung stehen.",
+      "skyScrollMode": "0 bis 2. Bei 1 bewegt sich der Himmel mit dem Wind, bei 2 ist er halbparallax.",
+      "foWRes": "Größe der Blöcke, in denen der Kriegsnebel (Fog of War) berechnet wird. Standardwert 64. Achtung: Kleinere Werte verbessern zwar die Darstellung des Kriegsnebels, erhöhen aber auch die benötigte Rechenleistung bei hohen Bildschirmauflösungen. Ab CR."
+    },
+    "animals": {
+      "animal": "Freilaufende Lebewesen.",
+      "nest": "Nester im Erdreich."
+    },
+    "weather": {
+      "climate": "0-100 und Abweichung. Durchschnittstemperatur. 0 warm, 100 kalt.",
+      "startSeason": "0-100 und Abweichung. Startjahreszeit.",
+      "yearSpeed": "0-100 und Abweichung. Geschwindigkeit des Jahreszeitenwechsels.",
+      "rain": "0-100 und Abweichung. Regenwahrscheinlichkeit.",
+      "wind": "-100-100 und Abweichung. Windrichtung und -stärke.",
+      "lightning": "0-100 und Abweichung. Blitzwahrscheinlichkeit.",
+      "precipitation": "Einfache Materialdefinition Niederschlag.",
+      "noGamma": "0 oder 1. Bei 1 wirken sich die Jahreszeiten nicht auf die Bildschirmfärbung aus."
+    },
+    "disaster": {
+      "meteorite": "0-100 und Abweichung. Meteoritenwahrscheinlichkeit.",
+      "volcano": "0-100 und Abweichung. Vulkanwahrscheinlichkeit.",
+      "earthquake": "0-100 und Abweichung. Erdbebenwahrscheinlichkeit."
+    },
+    "environment": {
+      "objects": "Umweltsteuerungsobjekte, die am Anfang der Runde platziert werden."
+    },
+    "definitions": {
+      "localOnly": "Wenn LocalOnly den Wert 1 hat, werden alle angegebenen Objektdefinitions-pakete ignoriert und nur lokale Objektdefinitionen geladen.",
+      "definitionX": "Über Definitionx-Einträge (1-9) kann vorgegeben werden, welche Objektdefinitionspakete (c4d) das Szenario benutzen soll. Die Pakete müssen im Clonk-Verzeichnis vorhanden sein. Sind Pakete im Szenario angegeben, wird die vom Menüsystem bestimmte Auswahl ignoriert.",
+      "skipDefs": "Liste der Definitionen, die im Spiel nicht geladen werden sollen. So lässt sich beispielsweise die Erforschung bestimmter Objekte verhindern."
+    }
+  }
+}

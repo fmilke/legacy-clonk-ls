@@ -1,7 +1,10 @@
 use super::node_kind::NODE_KIND_SECTION_NAME;
 use crate::lsp::{
     highlight_helper::{add_semantic_token, Context},
-    scenario_txt_handler::{definition::get_value_type, node_kind::NODE_KIND_PROPERTY},
+    scenario_txt_handler::{
+        definition::{Definition},
+        node_kind::NODE_KIND_PROPERTY,
+    },
     token_types::TokenTypes,
 };
 use tower_lsp::lsp_types::SemanticToken;
@@ -44,8 +47,9 @@ pub fn collect_semantic_tokens(
 
     let ctx = &mut c;
 
+    let mut section_name = "UNDEFINED_SECTION";
+
     loop {
-        // get section name
 
         loop {
             let node = cursor.node();
@@ -55,6 +59,10 @@ pub fn collect_semantic_tokens(
                     NODE_KIND_SECTION_NAME => {
                         if let Some(name) = node.child(1) {
                             add_semantic_token(ctx, ctx.token_types.keyword, &name);
+
+                            if let Ok(concrete_section_name) = name.utf8_text(source_bytes) {
+                                section_name = concrete_section_name;
+                            }
                         }
                     }
                     NODE_KIND_PROPERTY => {
@@ -68,11 +76,13 @@ pub fn collect_semantic_tokens(
                             if let Some(value) = node.child(2) {
                                 if let Ok(concrete_key) = key.utf8_text(source_bytes) {
                                     if let Ok(concrete_value) = value.utf8_text(source_bytes) {
-                                        get_value_type(concrete_key).extract_semantic_tokens(
-                                            &value,
-                                            ctx,
-                                            concrete_value,
-                                        );
+                                        if let Some(def) = Definition::get_def(section_name, concrete_key) {
+                                            def.value_type.extract_semantic_tokens(
+                                                &value,
+                                                ctx,
+                                                concrete_value,
+                                            );
+                                        }
                                     }
                                 }
                             }
