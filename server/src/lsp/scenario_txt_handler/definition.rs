@@ -5,6 +5,7 @@ use crate::lsp::highlight_helper::{add_semantic_token, add_semantic_token_at, Co
 #[derive(Debug, Clone)]
 pub enum ValueType {
     Integer,
+    DWORD,
     IntegerList,
     IdList,
     MatList,
@@ -64,7 +65,7 @@ impl ValueType {
                     start.column = original_start + 1 + pair.len();
                 }
             }
-            ValueType::Integer | ValueType::IntegerList => {
+            ValueType::Integer | ValueType::IntegerList | ValueType::DWORD => {
                 ValueType::extract_semantic_tokens_by_sep(node, ctx, source, ctx.token_types.number);
             }
             ValueType::IdList => {
@@ -104,6 +105,7 @@ impl FromStr for ValueType {
             "MatList" => Ok(ValueType::MatList),
             "Integer" => Ok(ValueType::Integer),
             "String" => Ok(ValueType::String),
+            "DWORD" => Ok(ValueType::DWORD),
             _ => {
                 tracing::info!("missing FromStr implentation ValueType for {}", s);
                 Ok(ValueType::String)
