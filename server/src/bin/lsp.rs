@@ -20,10 +20,10 @@ impl OwnSemanticTokenType {
 }
 
 const NEGOTIATE_TOKENT_TYPES: bool = false;
+const LOG_TREE_UPDATE_POSITIONS: bool = false;
 
 struct Backend {
     client: Client,
-
     token_types: RwLock<TokenTypes>,
     documents: DashMap<Url, Document>,
     embedding: Embedding,
@@ -130,7 +130,7 @@ impl Backend {
         }
     }
 
-    fn change_document(&self, uri: Url, contents: String) -> std::result::Result<(), String> {
+    fn change_document(&self, uri: &Url, contents: String) -> std::result::Result<(), String> {
         if let Some(ref mut doc) = self.documents.get_mut(&uri) {
             tracing::info!(
                 "Changed document {}, having doc type {:?}",
@@ -144,6 +144,45 @@ impl Backend {
             let old_end_position = doc.tree.root_node().end_position();
             let new_end_row = contents.chars().filter(|c| c == &'\n').count();
             let new_end_column = contents.chars().rev().position(|c| c == '\n').unwrap_or(0);
+
+            let old_tree = parser.parse(&doc.source, None).unwrap();
+            let old_r = old_tree.root_node();
+            let new_tree = parser.parse(&contents, None).unwrap();
+            let new_r = new_tree.root_node();
+
+            if LOG_TREE_UPDATE_POSITIONS {
+                tracing::info!(
+                    "         Old tree root positions: start: {}; end: {}; bytes_start: {}; bytes_end: {}",
+                    old_r.start_position(),
+                    old_r.end_position(),
+                    old_r.start_byte(),
+                    old_r.end_byte()
+                );
+                tracing::info!(
+                    "Computed old tree root positions: start: {}; end: {}; bytes_start: {}; bytes_end: {}",
+                    Point { row: 0, column: 0 },
+                    old_end_position,
+                    start_byte,
+                    old_end_byte,
+                );
+                tracing::info!(
+                    "         New tree root positions: start: {}; end: {}; bytes_start: {}; bytes_end: {}",
+                    new_r.start_position(),
+                    new_r.end_position(),
+                    new_r.start_byte(),
+                    new_r.end_byte()
+                );
+                tracing::info!(
+                    "Computed new tree root positions: start: {}; end: {}; bytes_start: {}; bytes_end: {}",
+                    Point { row: 0, column: 0 },
+                    Point {
+                        row: new_end_row,
+                        column: new_end_column,
+                    },
+                    start_byte,
+                    contents.len(),
+                );
+            }
 
             doc.tree.edit(&InputEdit {
                 start_byte,
@@ -159,6 +198,7 @@ impl Backend {
 
             if let Some(new_tree) = parser.parse(&contents, Some(&doc.tree)) {
                 doc.tree = new_tree;
+                doc.source = contents;
                 Ok(())
             } else {
                 Err(String::from("Could not update parse tree"))
@@ -225,10 +265,12 @@ impl LanguageServer for Backend {
     }
 
     async fn did_change(&self, params: DidChangeTextDocumentParams) {
-        if let Err(e) = self.change_document(
-            params.text_document.uri,
-            params.content_changes[0].text.clone(),
-        ) {
+        let uri = params.text_document.uri;
+
+        tracing::info!("Changes: {}", &params.content_changes.len());
+
+        if let Err(e) = self.change_document(&uri, params.content_changes[0].text.clone()) {
+            tracing::error!("Error when updating text document ({:?}): {}", &uri, e);
             self.client.log_message(MessageType::INFO, e).await;
         }
     }
@@ -242,20 +284,32 @@ impl LanguageServer for Backend {
         params: SemanticTokensParams,
     ) -> Result<Option<SemanticTokensResult>> {
         let uri = params.text_document.uri;
-        let doc = self.documents.get(&uri).unwrap();
+        match self.documents.get(&uri) {
+            Some(doc) => {
+                // Get as ref?
+                let lut = match self.token_types.read() {
+                    Ok(lut) => *lut,
+                    _ => {
+                        tracing::info!(
+                            "Could not acquired negotiated token_types. Using default ones instead"
+                        );
+                        TokenTypes::default()
+                    }
+                };
 
-        // Get as ref?
-        let lut = match self.token_types.read() {
-            Ok(lut) => *lut,
-            _ => TokenTypes::default(),
-        };
-
-        let handler = doc.doc_type.get_handler();
-        let tokens = handler.collect_semantic_tokens(&doc.tree, lut, doc.source.as_ref());
-        Ok(Some(SemanticTokensResult::Tokens(SemanticTokens {
-            result_id: None,
-            data: tokens,
-        })))
+                tracing::info!("doc: {}", &doc.source.len());
+                let handler = doc.doc_type.get_handler();
+                let tokens = handler.collect_semantic_tokens(&doc.tree, lut, doc.source.as_ref());
+                Ok(Some(SemanticTokensResult::Tokens(SemanticTokens {
+                    result_id: None,
+                    data: tokens,
+                })))
+            }
+            _ => {
+                tracing::info!("Requested semantic_tokens_full endpoint, but did not found document with uri: {}", &uri);
+                Ok(None)
+            }
+        }
     }
 
     async fn initialized(&self, _: InitializedParams) {
@@ -281,7 +335,6 @@ impl LanguageServer for Backend {
     }
 
     async fn hover(&self, params: HoverParams) -> Result<Option<Hover>> {
-
         let uri = params.text_document_position_params.text_document.uri;
         match self.documents.get(&uri) {
             Some(doc) => {
@@ -303,7 +356,12 @@ impl LanguageServer for Backend {
                     return Ok(Some(response));
                 }
             }
-            _ => {}
+            _ => {
+                tracing::info!(
+                    "Requested hover endpoint, but did not found document with uri: {}",
+                    &uri
+                );
+            }
         }
 
         Ok(None)
