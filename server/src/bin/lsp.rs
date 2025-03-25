@@ -1,5 +1,6 @@
 use dashmap::DashMap;
 use legacy_clonk_ls::core::embedding::Embedding;
+use legacy_clonk_ls::lang::Translation;
 use legacy_clonk_ls::lsp::doc::{DocType, Document};
 use legacy_clonk_ls::lsp::token_types::TokenTypes;
 use std::fs::OpenOptions;
@@ -238,6 +239,11 @@ impl LanguageServer for Backend {
             if let Ok(mut tt) = self.token_types.write() {
                 *tt = lut;
             }
+        }
+
+
+        if let Some(lang_tag) = params.locale {
+            Translation::configure(lang_tag);
         }
 
         let text_document_sync_capabilities =

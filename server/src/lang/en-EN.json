@@ -1,0 +1,100 @@
+{
+  "scenario_txt": {
+    "head": {
+      "icon": "Default icon for the scenario. See the scenario options in the menu system",
+      "title": "Title for the scenario. Entries in Title.txt will override this value. Max 512 characters",
+      "version": "Engine version required by the scenario",
+      "roundOptions": "0 or 1. Allow other players to change scenario properties in the menu system",
+      "maxPlayer": "Maximum player count",
+      "noInitialize": "0 or 1. If 1, basic startup objects as defined in Scenario.txt (player material and buildings, animals, vegetation) are not placed. This flag is automatically set in savegaes and is used to avoid duplication by repeated scenario initialization. The flag ignores among others the values Buildings, Vehicles, Material, Vegetation, InEarth, and Animals.",
+      "missionAcces": "The scenario will only load if the player gained this password in another scenario. See script function GainMissionAccess().",
+      "replay": "Set automatically be the engine. Marks the scenario as record.",
+      "film": "0 or 1 und only valid for records. If 1, the view always follows the first player and all player controls are invisible.",
+      "forcedGfxMode": "0-2. 0: All engines possible; 1: NewGfx only (OpenGL/D3D); 2: OldGfx only (8bit-DDraw)"
+    },
+    "game": {
+      "rules": "Game rules",
+      "goals": "Game goals",
+      "valueOverloads": "List of definitions for which the values should be overridden. The amount will be the new value.",
+      "foWColor": "Color of the fog of war",
+      "mode": "Obsolete. 0 Cooperative, 1 Melee, 2 Teamwork-Melee.",
+      "elimination": "Obsolete. Player elimination by: 0 Loss of captain, 1 Loss of crew, 2 Loss of flag.",
+      "cooperativeGoal": "Obsolete. Value for goal in the menu system (0-4)",
+      "createObjects": "Obsolete. Game goal: These objects must be created.",
+      "clearObjects": "Obsolete. Game goal: The object counts must be reduced to x",
+      "clearMaterials": "Obsolete. Game goal: The material count must be reduced to x",
+      "baseFunctionality": "A bit mask that defines which functionality a home base object will offer. See Homebase Functionality.\n\nSince CR.",
+      "baseRegenerateEnergyPrice": "The cost of recharging a clonk to 100% life energy in the home base. Default is 5. Value 0 will yield free recharging.\n\nSince CR."
+    },
+    "playerX": {
+      "wealth": "Seed capital.",
+      "position": "Start position as coordinates for the un-zoomed landscape. Both -1: Random position.",
+      "crew": "Type and count of initial crew members.",
+      "buildings": "Buildings available at game start.",
+      "vehicles": "Vehicles available at game start.",
+      "material": "Materials available at game start",
+      "knowledge": "Objects the player should initially be able to create.",
+      "homeBaseMaterial": "Materials available to buy at game start.",
+      "homeBaseProduction": "Additional supply of materials to buy.",
+      "magic": "Available spells. If the list is empty, all spells are available (backwards compatibility)."
+    },
+    "landscape": {
+      "vegetation": "Vegetation types and ratio.",
+      "vegetationLevel": "0-100. Vegetation amount.",
+      "inEarth": "Types and proportionate shares of buried objects.",
+      "inEarthLevel": "0-100. Amount of buried objects.",
+      "sky": "Sky texture from Graphics.c4g (without filename extension)",
+      "skyFade": "Sky color gradient (RGB to RGB). Values 0-255. With all values 0, the default blue background will be used.",
+      "bottomOpen": "0 or 1. Determines wether the bottom of the game world should be open.",
+      "topOpen": "0 or 1. Determines wether the top of the game world should be open.",
+      "leftOpen": "Height until which the left side of the game world is open.",
+      "rightOpen": "Height until which the right side of the game world is open.",
+      "autoScanSideOpen": "0 or 1. If 1, LeftOpen and RightOpen will be set automatically depending on the landscape at game start.",
+      "mapWidth": "Base width of the dynamic map.",
+      "mapHeight": "Base height of the dynamic map.",
+      "mapZoom": "Factor for zooming the map to the real game world. Default is 10.",
+      "amplitude": "0-100 with tolerance. Hill height for dynamic maps.",
+      "phase": "0-100 with tolerance. Hill offset for dynamic maps.",
+      "period": "0-100 with tolerance. Hill interval for dynamic maps.",
+      "random": "0-100 with tolerance. Random deviance for dynamic maps.",
+      "material": "Material-texture definition of the base material for dynamic maps.",
+      "liquid": "Material-texture definition of the liquid material for dynamic maps.",
+      "liquidLevel": "0-100 with tolerance. Liquid level for dynamic maps.",
+      "mapPlayerExtend": "0 or 1. Determines wether the dynamic map will be extended for every player activated at game start.",
+      "layers": "Additional material layers in earth for dynamic maps.",
+      "exactLandscape": "0 or 1. Specifies wether the Landscape.bmp is an actual game landscape.",
+      "gravity": "10-200: Gravity. Default 100.",
+      "noScan": "0 or 1. If 1, some ingame landscape checks will be turned of, such as freezing, melting or material counting.",
+      "keepMapCreator": "0 or 1. If 1, the internal MapCreater won't unload after game start, so functions like DrawDefMap still work.",
+      "skyScrollMode": "0 to 2. 0: Static sky, 1: The sky moves with the wind, 2: The sky is drawn half-parallax.",
+      "foWRes": "Granularity of the Fog of War. Default: 64. Warning: smaller values will improve the looks of the FoW but will also severely increase processing times."
+    },
+    "animals": {
+      "animal": "Freewheeling creatures.",
+      "nest": "Buried nests."
+    },
+    "weather": {
+      "climate": "0-100 with tolerance. Average temperature. 0 warm, 100 cold.",
+      "startSeason": "0-100 with tolerance. Season at game start.",
+      "yearSpeed": "0-100 with tolerance. Speed of season change.",
+      "rain": "0-100 with tolerance. Precipitation amount.",
+      "wind": "-100-100 with tolerance. Wind direction and strength.",
+      "lightning": "0-100 with tolerance. Probability for lightnings.",
+      "precipitation": "Simple material definition precipitation.",
+      "noGamma": "0 or 1. If 1, the current season won't cause a small global color change."
+    },
+    "disaster": {
+      "meteorite": "0-100 with tolerance. Probability for meteorites.",
+      "volcano": "0-100 with tolerance. Probability for volcanos.",
+      "earthquake": "0-100 with tolerance. Probability for earthquakes."
+    },
+    "environment": {
+      "objects": "Environment control objects that are placed at game start."
+    },
+    "definitions": {
+      "localOnly": "If LocalOnly is 1, only definitions local to the scenario file will be load.",
+      "definitionX": "With Definitionx entries you can specify which object definition packs (c4d) are to be loaded with this scenario. The specified files must be available in the Clonk directory. If files are specified here, manual pack selection in the menu system is disabled.",
+      "skipDefs": "List of object definitions (C4IDs) which are not to be loaded with this scenario. This can be used to prevent researching certain object types in the game."
+    }
+  }
+}

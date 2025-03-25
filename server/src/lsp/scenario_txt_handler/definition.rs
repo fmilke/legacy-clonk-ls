@@ -164,13 +164,6 @@ fn init_definitions<'a>() -> Defs<'a> {
                 value_type: value_type.clone(),
             };
 
-            tracing::info!(
-                "parsed this def {:?} for section {} and property {}",
-                &def,
-                &section_name,
-                &key_name
-            );
-
             match map.get_mut(section_name) {
                 Some(sub_map) => {
                     sub_map.insert(key_name, def);

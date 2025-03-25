@@ -116,7 +116,7 @@ impl DocType {
         match ext {
             "c" => {
                 Ok(DocType::Script)
-            },
+            }
             "txt" => {
                 match file_name {
                     "Scenario.txt" => {
@@ -126,10 +126,10 @@ impl DocType {
                         Err(anyhow!("File extension '.{}' was recognized, but file name is unknown: {}", &ext, file_name))
                     },
                 }
-            },
+            }
             _ => {
                 Err(anyhow!("Unrecognized file extension: {}", &ext))
-            },
+            }
         }
     }
 
