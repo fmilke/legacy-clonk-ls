@@ -5,17 +5,6 @@ use tokio;
 
 #[tokio::main]
 async fn main() {
-
-    // TODO: Properly configure logging
-    /*
-    if let Ok(file) = std::fs::File::create("/home/fmi/lsp-log") {
-        let _ = WriteLogger::init(log::LevelFilter::Trace, simplelog::Config::default(), file);
-    }
-    */
-
-    let stdin = tokio::io::stdin();
-    let stdout = tokio::io::stdout();
-
     let fname = env::args().skip(1).next().expect("Missing argument");
 
     println!("Filename {}", &fname);

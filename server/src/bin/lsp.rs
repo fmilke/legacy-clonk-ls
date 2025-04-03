@@ -1,5 +1,4 @@
 use dashmap::DashMap;
-use legacy_clonk_ls::core::embedding::Embedding;
 use legacy_clonk_ls::lang::Translation;
 use legacy_clonk_ls::lsp::doc::{DocType, Document};
 use legacy_clonk_ls::lsp::token_types::TokenTypes;
@@ -27,7 +26,6 @@ struct Backend {
     client: Client,
     token_types: RwLock<TokenTypes>,
     documents: DashMap<Url, Document>,
-    embedding: Embedding,
 }
 
 impl Backend {
@@ -382,7 +380,6 @@ async fn start_language_server() {
         token_types: RwLock::new(TokenTypes::default()),
         client,
         documents: DashMap::new(),
-        embedding: Embedding::new(),
     });
     Server::new(stdin, stdout, socket).serve(service).await;
 }

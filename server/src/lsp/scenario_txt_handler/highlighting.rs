@@ -2,7 +2,7 @@ use super::node_kind::NODE_KIND_SECTION_NAME;
 use crate::lsp::{
     highlight_helper::{add_semantic_token, Context},
     scenario_txt_handler::{
-        definition::{Definition},
+        definition::Definition,
         node_kind::NODE_KIND_PROPERTY,
     },
     token_types::TokenTypes,
