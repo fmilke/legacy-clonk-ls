@@ -1,5 +1,5 @@
 import * as path from 'path';
-import { commands, ExtensionContext, OutputChannel, window } from 'vscode';
+import { commands, ExtensionContext, extensions, OutputChannel, window } from 'vscode';
 
 import {
 	LanguageClient,
@@ -35,7 +35,7 @@ export function activate(context: ExtensionContext) {
 		},
 		debug: {
 			command: pathToBinInDebug,
-			args: [],
+			args: ["--debug"],
 			transport: TransportKind.stdio,
 		},
 	};

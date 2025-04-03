@@ -2,6 +2,7 @@ use dashmap::DashMap;
 use legacy_clonk_ls::lang::Translation;
 use legacy_clonk_ls::lsp::doc::{DocType, Document};
 use legacy_clonk_ls::lsp::token_types::TokenTypes;
+use tracing::level_filters::LevelFilter;
 use std::fs::OpenOptions;
 use std::sync::RwLock;
 use tokio;
@@ -239,7 +240,6 @@ impl LanguageServer for Backend {
             }
         }
 
-
         if let Some(lang_tag) = params.locale {
             Translation::configure(lang_tag);
         }
@@ -253,7 +253,6 @@ impl LanguageServer for Backend {
                 text_document_sync: Some(text_document_sync_capabilities),
                 hover_provider: Some(HoverProviderCapability::Simple(true)),
                 signature_help_provider: Some(SignatureHelpOptions {
-                    //trigger_characters: Some(vec![String::from("(")]),
                     ..Default::default()
                 }),
                 ..Default::default()
@@ -270,8 +269,6 @@ impl LanguageServer for Backend {
 
     async fn did_change(&self, params: DidChangeTextDocumentParams) {
         let uri = params.text_document.uri;
-
-        tracing::info!("Changes: {}", &params.content_changes.len());
 
         if let Err(e) = self.change_document(&uri, params.content_changes[0].text.clone()) {
             tracing::error!("Error when updating text document ({:?}): {}", &uri, e);
@@ -330,11 +327,7 @@ impl LanguageServer for Backend {
         Ok(())
     }
 
-    async fn completion(&self, p: CompletionParams) -> Result<Option<CompletionResponse>> {
-        self.client
-            .log_message(MessageType::INFO, format!("Got completion: {:?}", p))
-            .await;
-
+    async fn completion(&self, _: CompletionParams) -> Result<Option<CompletionResponse>> {
         Ok(None)
     }
 
@@ -386,18 +379,43 @@ async fn start_language_server() {
 
 #[tokio::main]
 async fn main() {
-    let options = OpenOptions::new()
-        .append(true)
-        .create(true)
-        .open("/home/fmi/log")
-        .unwrap();
+    let mut args = std::env::args().skip(1);
 
-    let subscriber = tracing_subscriber::fmt()
-        .with_writer(options)
-        .with_file(true)
-        .finish();
+    let mut debug_mode = false;
+    let mut log_path: Option<String> = None;
 
-    tracing::subscriber::set_global_default(subscriber).unwrap();
+    loop {
+        if let Some(arg) = args.next() {
+            match arg.as_ref() {
+                "--debug" => {
+                    debug_mode = true;
+                }
+                _ => {}
+            }
+        } else {
+            break;
+        }
+    }
+
+    let log_path = std::env::var("LC_LSP_LOG_PATH").ok();
+
+
+    if let Some(log_path) = log_path {
+        let options = OpenOptions::new()
+            .append(true)
+            .create(true)
+            .open(log_path)
+            .unwrap();
+
+        let level_filter = if debug_mode { LevelFilter::TRACE } else { LevelFilter::INFO };
+        let subscriber = tracing_subscriber::fmt()
+            .with_writer(options)
+            .with_file(true)
+            .with_max_level(level_filter)
+            .finish();
+
+        tracing::subscriber::set_global_default(subscriber).unwrap();
+    }
 
     start_language_server().await;
 }
