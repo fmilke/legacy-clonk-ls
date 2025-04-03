@@ -100,6 +100,10 @@ pub enum DocType {
     ScenarioTxt,
 }
 
+const F_EXT_SCRIPT: &str = "c";
+const F_EXT_TXT: &str = "txt";
+const F_NAME_SCENARIO: &str = "Scenario.txt";
+
 impl DocType {
     pub fn from_uri(uri: &Url) -> anyhow::Result<Self> {
         let file_name = uri
@@ -114,12 +118,12 @@ impl DocType {
             .context("Could not get file extension")?;
 
         match ext {
-            "c" => {
+            F_EXT_SCRIPT => {
                 Ok(DocType::Script)
             }
-            "txt" => {
+            F_EXT_TXT => {
                 match file_name {
-                    "Scenario.txt" => {
+                    F_NAME_SCENARIO => {
                         Ok(DocType::ScenarioTxt)
                     },
                     _ => {
