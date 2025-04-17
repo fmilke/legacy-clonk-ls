@@ -1,12 +1,10 @@
-use crate::lang::Translation;
-
-use super::{asset_handler::AssetHandler, doc::Document, token_types::TokenTypes};
-use definition::Definition;
+use crate::{lang::Translation, lsp::shared::definition::IniDefsProvider};
+use super::{asset_handler::AssetHandler, doc::Document, shared::definition::collect_semantic_tokens, token_types::TokenTypes};
+use definition::ScenarioTxtDefs;
 use node_kind::{NODE_KIND_PROPERTY, NODE_KIND_SECTION, NODE_KIND_SECTION_NAME};
 use tower_lsp::lsp_types::SemanticToken;
 
-mod definition;
-mod highlighting;
+pub mod definition;
 mod node_kind;
 
 #[derive(Debug, Clone, Default)]
@@ -19,7 +17,7 @@ impl AssetHandler for ScenarioTxtHandler {
         lut: TokenTypes,
         source: &str,
     ) -> Vec<SemanticToken> {
-        highlighting::collect_semantic_tokens(tree, lut, source)
+        collect_semantic_tokens::<ScenarioTxtDefs>(tree, lut, source)
     }
 
     fn get_hover_text(
@@ -46,7 +44,7 @@ impl AssetHandler for ScenarioTxtHandler {
 
                         if let Some(ref section_name) = section_name {
                             tracing::info!("Got section {}", section_name);
-                            if let Some(def) = Definition::get_def(section_name, text) {
+                            if let Some(def) = ScenarioTxtDefs::get_def(section_name, text) {
                                 if let Some(s) = Translation::get_translation(def.description) {
                                     return Some(s.to_owned());
                                 }

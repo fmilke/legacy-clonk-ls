@@ -1,133 +1,11 @@
-use std::{collections::HashMap, str::FromStr};
+use crate::lsp::shared::definition::{Definition, Defs, IniDefsProvider, ValueType};
 use lazy_static::lazy_static;
-use crate::lsp::highlight_helper::{add_semantic_token, add_semantic_token_at, Context};
+use std::{collections::HashMap, str::FromStr};
 
-#[derive(Debug, Clone)]
-pub enum ValueType {
-    Integer,
-    DWORD,
-    IntegerList,
-    IdList,
-    MatList,
-    Id,
-    String,
-    Unknown,
-}
+pub struct ScenarioTxtDefs;
 
-impl ValueType {
-    fn extract_semantic_tokens_by_sep(
-        node: &tree_sitter::Node,
-        ctx: &mut Context,
-        source: &str,
-        token_type: u32,
-    ) {
-        let mut start = node.start_position();
-        let mut end = node.start_position();
-
-        for token in source.split(',') {
-            let original_start = start.column;
-            end.column = start.column + token.len();
-            add_semantic_token_at(ctx, token_type, start, end);
-            start.column = original_start + 1 + token.len();
-        }
-    }
-
-    pub fn extract_semantic_tokens(
-        &self,
-        node: &tree_sitter::Node,
-        ctx: &mut Context,
-        source: &str,
-    ) {
-        match self {
-            ValueType::String => {
-                add_semantic_token(ctx, ctx.token_types.string, &node);
-            }
-            ValueType::MatList => {
-                // TODO: same as IdList, make reusable
-                let mut start = node.start_position();
-                let mut end = node.start_position();
-
-                for pair in source.split(';') {
-                    let original_start = start.column;
-                    if let Some((key, value)) = pair.split_once('=') {
-                        end.column = start.column + key.len();
-                        add_semantic_token_at(ctx, ctx.token_types.string, start, end);
-
-                        start.column += key.len();
-                        end.column = start.column + 1;
-                        add_semantic_token_at(ctx, ctx.token_types.operator, start, end);
-
-                        start.column = end.column;
-                        end.column += value.len();
-                        add_semantic_token_at(ctx, ctx.token_types.number, start, end);
-                    }
-
-                    start.column = original_start + 1 + pair.len();
-                }
-            }
-            ValueType::Integer | ValueType::IntegerList | ValueType::DWORD => {
-                ValueType::extract_semantic_tokens_by_sep(node, ctx, source, ctx.token_types.number);
-            }
-            ValueType::IdList => {
-                let mut start = node.start_position();
-                let mut end = node.start_position();
-
-                for pair in source.split(';') {
-                    let original_start = start.column;
-                    if let Some((key, value)) = pair.split_once('=') {
-                        end.column = start.column + key.len();
-                        add_semantic_token_at(ctx, ctx.token_types.id, start, end);
-
-                        start.column += key.len();
-                        end.column = start.column + 1;
-                        add_semantic_token_at(ctx, ctx.token_types.operator, start, end);
-
-                        start.column = end.column;
-                        end.column += value.len();
-                        add_semantic_token_at(ctx, ctx.token_types.number, start, end);
-                    }
-
-                    start.column = original_start + 1 + pair.len();
-                }
-            }
-            _ => {}
-        }
-    }
-}
-
-impl FromStr for ValueType {
-    type Err = &'static str;
-
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "IdList" => Ok(ValueType::IdList),
-            "Id" => Ok(ValueType::Id),
-            "MatList" => Ok(ValueType::MatList),
-            "Integer" => Ok(ValueType::Integer),
-            "String" => Ok(ValueType::String),
-            "DWORD" => Ok(ValueType::DWORD),
-            _ => {
-                tracing::info!("missing FromStr implentation ValueType for {}", s);
-                Ok(ValueType::String)
-            }
-        }
-    }
-}
-
-type Defs<'a> = HashMap<&'a str, HashMap<&'a str, Definition>>;
-
-lazy_static! {
-    static ref DEFS: Defs<'static> = init_definitions();
-}
-
-#[derive(Debug)]
-pub struct Definition {
-    pub value_type: ValueType,
-    pub description: &'static str,
-}
-
-impl Definition {
-    pub fn get_def<'a>(section_name: &str, key: &str) -> Option<&'a Definition> {
+impl IniDefsProvider for ScenarioTxtDefs {
+    fn get_def(section_name: &str, key: &str) -> Option<&'static Definition> {
         let map = &*DEFS;
         match map.get(section_name) {
             Some(inner_map) => inner_map.get(key),
@@ -136,7 +14,126 @@ impl Definition {
     }
 }
 
+lazy_static! {
+    static ref DEFS: Defs<'static> = init_definitions2();
+}
+
 const UNPARSED_DEFS: &str = include_str!("./scenario_txt_defs.csv");
+type DefProducer = fn(ctx: &mut DefProducerContext);
+
+pub struct DefProducerContext {
+    section_name: &'static str,
+    key: &'static str,
+    translation_key: &'static str,
+    value_type: ValueType,
+    map: Defs<'static>,
+}
+
+impl DefProducerContext {
+    pub fn section_name(&self) -> &str {
+        self.section_name
+    }
+
+    pub fn key(&self) -> &str {
+        self.key
+    }
+
+    pub fn add_with_section(&mut self, section_name: &'static str) {
+        self.add_def(
+            section_name,
+            self.key,
+            self.value_type.clone(),
+            self.translation_key,
+        );
+    }
+
+    pub fn add(&mut self) {
+        self.add_def(
+            self.section_name,
+            self.key,
+            self.value_type.clone(),
+            self.translation_key,
+        );
+    }
+
+    fn add_def(
+        &mut self,
+        section_name: &'static str,
+        key_name: &'static str,
+        value_type: ValueType,
+        translation_key: &'static str,
+    ) {
+
+        //tracing::info!("section: {}, key: {}, value: {:?}, translation: {}", section_name, key_name, value_type.clone(), translation_key);
+
+        let def = Definition {
+            description: translation_key,
+            value_type: value_type.clone(),
+        };
+
+        match self.map.get_mut(section_name) {
+            Some(sub_map) => {
+                sub_map.insert(key_name, def);
+            }
+            None => {
+                let mut sub_map = HashMap::new();
+                sub_map.insert(key_name, def);
+                self.map.insert(section_name, sub_map);
+            }
+        }
+    }
+}
+
+impl Default for DefProducerContext {
+    fn default() -> Self {
+        DefProducerContext {
+            section_name: "",
+            key: "",
+            translation_key: "",
+            value_type: ValueType::Id,
+            map: HashMap::new(),
+        }
+    }
+}
+
+pub fn parse_defs<'a>(s: &'static str, producer: DefProducer) -> Defs<'a> {
+    let mut ctx = DefProducerContext::default();
+
+    for line in s.lines() {
+        let mut parts = line.split('|');
+        let section_name = parts.next().expect("Getting Scenario.txt section");
+        let key_name = parts.next().expect("Getting Scenario.txt key");
+        let value_type = parts
+            .next()
+            .map(|v| ValueType::from_str(v).unwrap())
+            .expect("Getting Scenario.txt value type");
+
+        let translation_key = parts.next().expect("Getting Scenario.txt translation key");
+
+        ctx.section_name = section_name;
+        ctx.key = key_name;
+        ctx.translation_key = translation_key;
+        ctx.value_type = value_type;
+
+        producer(&mut ctx);
+    }
+
+    ctx.map
+}
+
+fn init_definitions2() -> Defs<'static> {
+    parse_defs(UNPARSED_DEFS, |ctx| {
+        tracing::info!("CALLBACK CALLED");
+        if ctx.section_name == "Player" {
+            ctx.add_with_section("Player1");
+            ctx.add_with_section("Player2");
+            ctx.add_with_section("Player3");
+            ctx.add_with_section("Player4");
+        } else {
+            ctx.add();
+        }
+    })
+}
 
 fn init_definitions<'a>() -> Defs<'a> {
     let mut map: Defs = HashMap::new();

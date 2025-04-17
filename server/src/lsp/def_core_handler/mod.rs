@@ -1,0 +1,36 @@
+use tower_lsp::lsp_types::SemanticToken;
+use lazy_static::lazy_static;
+use super::{asset_handler::AssetHandler, scenario_txt_handler::definition::parse_defs, shared::definition::{collect_semantic_tokens, Definition, Defs, IniDefsProvider}, token_types::TokenTypes};
+
+const UNPARSED_DEFS: &str = include_str!("./defs.csv");
+
+lazy_static! {
+    static ref DEFS: Defs<'static> = init_definitions();
+}
+
+pub struct DefCoreDefs;
+
+impl IniDefsProvider for DefCoreDefs {
+    fn get_def(section_name: &str, key: &str) -> Option<&'static Definition> {
+        let map = &*DEFS;
+        match map.get(section_name) {
+            Some(inner_map) => inner_map.get(key),
+            None => None,
+        }
+    }
+}
+
+fn init_definitions() -> Defs<'static> {
+    parse_defs(UNPARSED_DEFS, |ctx| {
+        ctx.add();
+    })
+}
+
+#[derive(Debug, Clone, Default)]
+pub struct DefCoreHandler;
+
+impl AssetHandler for DefCoreHandler {
+    fn collect_semantic_tokens(&self, tree: &tree_sitter::Tree, lut: TokenTypes, source: &str) -> Vec<SemanticToken> {
+        collect_semantic_tokens::<DefCoreDefs>(tree, lut, source)
+    }
+}

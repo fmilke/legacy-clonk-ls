@@ -104,7 +104,8 @@
 					"C4Ini"
 				],
 				"filenames": [
-					"Scenario.txt"
+					"Scenario.txt",
+					"DefCore.txt"
 				],
 				"firstLine": "/(Scenario)/",
 				"icon": {

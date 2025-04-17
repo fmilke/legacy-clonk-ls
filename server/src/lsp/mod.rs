@@ -4,3 +4,5 @@ pub mod asset_handler;
 pub mod scenario_txt_handler;
 pub mod script_handler;
 pub mod highlight_helper;
+pub mod def_core_handler;
+pub mod shared;
