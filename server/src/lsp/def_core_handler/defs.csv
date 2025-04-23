@@ -1,7 +1,7 @@
 DefCore|id|Id|defcore.defcore.id
 DefCore|Version|Integer|defcore.defcore.version
 DefCore|Name|String|defcore.defcore.name
-DefCore|Category|Integer|defcore.defcore.category
+DefCore|Category|FlagList|defcore.defcore.category
 DefCore|MaxUserSelect|Integer|defcore.defcore.maxUserSelect
 DefCore|TimerCall|String|defcore.defcore.timerCall
 DefCore|Timer|Integer|defcore.defcore.timer

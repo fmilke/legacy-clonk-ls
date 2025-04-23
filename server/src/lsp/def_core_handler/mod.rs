@@ -1,7 +1,7 @@
 use super::{
     asset_handler::AssetHandler,
     scenario_txt_handler::definition::parse_defs,
-    shared::definition::{collect_semantic_tokens, C4Ini, Definition, Defs, IniDefsProvider},
+    shared::definition::{collect_semantic_tokens, Definition, Defs, IniDefsProvider},
     token_types::TokenTypes,
 };
 use lazy_static::lazy_static;

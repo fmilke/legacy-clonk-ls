@@ -18,6 +18,7 @@ pub trait IniDefsProvider {
 
 #[derive(Debug, Clone)]
 pub enum ValueType {
+    FlagList,
     Integer,
     DWORD,
     IntegerList,
@@ -34,11 +35,11 @@ impl ValueType {
         ctx: &mut Context,
         source: &str,
         token_type: u32,
+        seperator: char,
     ) {
         let mut start = node.start_position();
         let mut end = node.start_position();
-
-        for token in source.split(',') {
+        for token in source.split(seperator) {
             let original_start = start.column;
             end.column = start.column + token.len();
             add_semantic_token_at(ctx, token_type, start, end);
@@ -85,6 +86,16 @@ impl ValueType {
                     ctx,
                     source,
                     ctx.token_types.number,
+                    ','
+                );
+            }
+            ValueType::FlagList => {
+                ValueType::extract_semantic_tokens_by_sep(
+                    node,
+                    ctx,
+                    source,
+                    ctx.token_types.number,
+                    '|'
                 );
             }
             ValueType::Id => {
@@ -127,6 +138,7 @@ impl FromStr for ValueType {
             "MatList" => Ok(ValueType::MatList),
             "Integer" => Ok(ValueType::Integer),
             "String" => Ok(ValueType::String),
+            "FlagList" => Ok(ValueType::FlagList),
             "DWORD" => Ok(ValueType::DWORD),
             _ => {
                 tracing::info!("missing FromStr implentation ValueType for {}", s);
