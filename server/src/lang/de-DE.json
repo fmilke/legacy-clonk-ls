@@ -1,4 +1,7 @@
 {
+  "global": {
+      "undocumented": "Undokumentiert"
+  },
   "scenario_txt": {
     "head": {
       "icon": "Standard-Icon des Szenarios. Siehe Szenarioeigenschaften im Menüsystem",

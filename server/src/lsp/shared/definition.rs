@@ -1,6 +1,11 @@
-use tower_lsp::lsp_types::SemanticToken;
-use crate::lsp::{highlight_helper::{add_semantic_token, add_semantic_token_at, Context}, token_types::TokenTypes};
+use crate::lsp::{
+    doc::Document,
+    highlight_helper::{add_semantic_token, add_semantic_token_at, Context},
+    token_types::TokenTypes,
+};
 use std::{collections::HashMap, str::FromStr};
+use tower_lsp::lsp_types::SemanticToken;
+use tree_sitter::Point;
 
 pub const NODE_KIND_SECTION: &str = "section";
 pub const NODE_KIND_SECTION_NAME: &str = "section_name";
@@ -81,6 +86,9 @@ impl ValueType {
                     source,
                     ctx.token_types.number,
                 );
+            }
+            ValueType::Id => {
+                add_semantic_token(ctx, ctx.token_types.id, &node);
             }
             ValueType::IdList => {
                 let mut start = node.start_position();
@@ -214,9 +222,7 @@ pub fn collect_semantic_tokens<T: IniDefsProvider>(
                             if let Some(value) = node.child(2) {
                                 if let Ok(concrete_key) = key.utf8_text(source_bytes) {
                                     if let Ok(concrete_value) = value.utf8_text(source_bytes) {
-                                        if let Some(def) =
-                                            T::get_def(section_name, concrete_key)
-                                        {
+                                        if let Some(def) = T::get_def(section_name, concrete_key) {
                                             def.value_type.extract_semantic_tokens(
                                                 &value,
                                                 ctx,
@@ -245,4 +251,126 @@ pub fn collect_semantic_tokens<T: IniDefsProvider>(
     }
 
     c.collection
+}
+
+pub struct C4Ini;
+
+struct C4KeysIter<'a> {
+    doc: &'a tree_sitter::Tree,
+    pos: Point,
+    last_section_name: Option<&'a str>,
+    source: &'a str,
+}
+
+impl<'a> C4KeysIter<'a> {
+    pub fn from_document(doc: &'a tree_sitter::Tree, pos: tower_lsp::lsp_types::Position, source: &'a str) -> Self {
+        let point = Document::point_to_pos(pos);
+        C4KeysIter {
+            doc,
+            pos: point,
+            last_section_name: None,
+            source,
+        }
+    }
+}
+
+impl<'a> Iterator for C4KeysIter<'a> {
+    type Item = (&'a str, &'a str);
+
+    fn next(&mut self) -> Option<Self::Item> {
+        let mut cursor = self.doc.walk();
+        loop {
+            let node = cursor.node();
+
+            match node.kind() {
+                NODE_KIND_PROPERTY => {
+                    if let Some(key) = node.child(0) {
+                        if let Ok(concrete_key_name) = key.utf8_text(self.source.as_bytes())
+                        {
+                            if let Some(last_section_name) = self.last_section_name {
+                                return Some((last_section_name, concrete_key_name));
+                            }
+                        }
+                    }
+                }
+                NODE_KIND_SECTION => {
+                    if let Some(first_child) = node.child(0) {
+                        if first_child.kind() == NODE_KIND_SECTION_NAME {
+                            if let Some(name) = first_child.child(1) {
+                                if let Ok(concrete_section_name) =
+                                    name.utf8_text(self.source.as_bytes())
+                                {
+                                    self.last_section_name = Some(concrete_section_name);
+                                }
+                            }
+                        }
+                    }
+                }
+                _ => {}
+            }
+
+            if cursor.goto_first_child_for_point(self.pos).is_none() {
+                break;
+            }
+        }
+
+        None
+    }
+}
+
+impl C4Ini {
+
+    pub fn collect_all_keys_within_section<'a>(
+        doc: &'a tree_sitter::Tree,
+        pos: tower_lsp::lsp_types::Position,
+        source: &'a str,
+    ) -> Vec<&'a str> {
+        C4KeysIter::from_document(doc, pos, source)
+            .map(|(_, key)| key)
+            .collect()
+    }
+
+    pub fn get_section_from_pos<'a>(
+        tree: &tree_sitter::Tree,
+        pos: tower_lsp::lsp_types::Position,
+        source: &'a str,
+    ) -> Option<&'a str> {
+        let mut cursor = tree.walk();
+        let point = Document::point_to_pos(pos);
+
+        loop {
+            let node = cursor.node();
+
+            match node.kind() {
+                NODE_KIND_PROPERTY => {
+                    return None;
+                }
+                NODE_KIND_SECTION => {
+                    if let Some(first_child) = node.child(0) {
+                        if first_child.kind() == NODE_KIND_SECTION_NAME {
+                            if let Some(name) = first_child.child(1) {
+                                if let Ok(concrete_section_name) =
+                                    name.utf8_text(source.as_bytes())
+                                {
+                                    return Some(concrete_section_name);
+                                }
+                            }
+                        }
+                    }
+                }
+                _ => {}
+            }
+
+            if cursor.goto_first_child_for_point(point).is_none() {
+                break;
+            }
+        }
+
+        None
+    }
+}
+
+pub trait C4IniVisitor {
+    fn on_section_name(section_name: &str);
+    fn on_key_name(key_name: &str);
 }

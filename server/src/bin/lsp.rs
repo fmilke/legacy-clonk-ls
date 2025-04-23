@@ -2,7 +2,6 @@ use dashmap::DashMap;
 use legacy_clonk_ls::lang::Translation;
 use legacy_clonk_ls::lsp::doc::{DocType, Document};
 use legacy_clonk_ls::lsp::token_types::TokenTypes;
-use tracing::level_filters::LevelFilter;
 use std::fs::OpenOptions;
 use std::sync::RwLock;
 use tokio;
@@ -10,6 +9,7 @@ use tower_lsp::jsonrpc::Result;
 use tower_lsp::lsp_types::*;
 use tower_lsp::{Client, LanguageServer, LspService, Server};
 use tracing::info;
+use tracing::level_filters::LevelFilter;
 use tree_sitter::{InputEdit, Point};
 
 struct OwnSemanticTokenType;
@@ -327,8 +327,18 @@ impl LanguageServer for Backend {
         Ok(())
     }
 
-    async fn completion(&self, _: CompletionParams) -> Result<Option<CompletionResponse>> {
-        Ok(None)
+    async fn completion(&self, params: CompletionParams) -> Result<Option<CompletionResponse>> {
+        let uri = params.text_document_position.text_document.uri;
+        match self.documents.get(&uri) {
+            Some(doc) => {
+                let handler = doc.doc_type.get_handler();
+                let cursor_pos = params.text_document_position.position;
+                let items = handler.get_completions(&doc.tree, &doc.source, cursor_pos);
+
+                Ok(items.map(|i| CompletionResponse::Array(i)))
+            }
+            None => Ok(None),
+        }
     }
 
     async fn hover(&self, params: HoverParams) -> Result<Option<Hover>> {
@@ -399,7 +409,6 @@ async fn main() {
 
     let log_path = std::env::var("LC_LSP_LOG_PATH").ok();
 
-
     if let Some(log_path) = log_path {
         let options = OpenOptions::new()
             .append(true)
@@ -407,7 +416,11 @@ async fn main() {
             .open(log_path)
             .unwrap();
 
-        let level_filter = if debug_mode { LevelFilter::TRACE } else { LevelFilter::INFO };
+        let level_filter = if debug_mode {
+            LevelFilter::TRACE
+        } else {
+            LevelFilter::INFO
+        };
         let subscriber = tracing_subscriber::fmt()
             .with_writer(options)
             .with_file(true)

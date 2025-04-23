@@ -1,9 +1,9 @@
-DefCore|id|IdList|defcore.defcore.id
+DefCore|id|Id|defcore.defcore.id
 DefCore|Version|Integer|defcore.defcore.version
 DefCore|Name|String|defcore.defcore.name
 DefCore|Category|Integer|defcore.defcore.category
 DefCore|MaxUserSelect|Integer|defcore.defcore.maxUserSelect
-DefCore|TimerCall|Zeichenfolge defcore.defcore.timerCall
+DefCore|TimerCall|String|defcore.defcore.timerCall
 DefCore|Timer|Integer|defcore.defcore.timer
 DefCore|ContactCalls|Integer|defcore.defcore.contactCalls
 DefCore|Width|Integer|defcore.defcore.width
@@ -79,6 +79,7 @@ DefCore|RotatedEntrance|Integer|defcore.defcore.rotatedEntrance
 DefCore|MoveToRange|Integer|defcore.defcore.moveToRange
 DefCore|NoTransferZones|Integer|defcore.defcore.noTransferZones
 DefCore|AutoContextMenu|Integer|defcore.defcore.autoContextMenu
+DefCore|Components|IdList|global.undocumented
 Physical|Energy|Integer|defcore.physical.energy
 Physical|Breath|Integer|defcore.physical.breath
 Physical|Walk|Integer|defcore.physical.walk

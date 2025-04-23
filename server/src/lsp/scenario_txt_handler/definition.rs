@@ -1,4 +1,5 @@
 use crate::lsp::shared::definition::{Definition, Defs, IniDefsProvider, ValueType};
+use anyhow::Context;
 use lazy_static::lazy_static;
 use std::{collections::HashMap, str::FromStr};
 
@@ -63,9 +64,6 @@ impl DefProducerContext {
         value_type: ValueType,
         translation_key: &'static str,
     ) {
-
-        //tracing::info!("section: {}, key: {}, value: {:?}, translation: {}", section_name, key_name, value_type.clone(), translation_key);
-
         let def = Definition {
             description: translation_key,
             value_type: value_type.clone(),
@@ -101,14 +99,26 @@ pub fn parse_defs<'a>(s: &'static str, producer: DefProducer) -> Defs<'a> {
 
     for line in s.lines() {
         let mut parts = line.split('|');
-        let section_name = parts.next().expect("Getting Scenario.txt section");
-        let key_name = parts.next().expect("Getting Scenario.txt key");
+        let section_name = parts
+            .next()
+            .with_context(|| format!("Getting section name from {}", &line))
+            .expect("Getting Scenario.txt section");
+
+        let key_name = parts
+            .next()
+            .with_context(|| format!("Getting key from {}", &line))
+            .expect("Getting Scenario.txt key");
+
         let value_type = parts
             .next()
             .map(|v| ValueType::from_str(v).unwrap())
+            .with_context(|| format!("Getting value type from {}", &line))
             .expect("Getting Scenario.txt value type");
 
-        let translation_key = parts.next().expect("Getting Scenario.txt translation key");
+        let translation_key = parts
+            .next()
+            .with_context(|| format!("Getting translation key from {}", &line))
+            .expect("Getting Scenario.txt translation key");
 
         ctx.section_name = section_name;
         ctx.key = key_name;
@@ -123,7 +133,6 @@ pub fn parse_defs<'a>(s: &'static str, producer: DefProducer) -> Defs<'a> {
 
 fn init_definitions2() -> Defs<'static> {
     parse_defs(UNPARSED_DEFS, |ctx| {
-        tracing::info!("CALLBACK CALLED");
         if ctx.section_name == "Player" {
             ctx.add_with_section("Player1");
             ctx.add_with_section("Player2");
@@ -133,79 +142,4 @@ fn init_definitions2() -> Defs<'static> {
             ctx.add();
         }
     })
-}
-
-fn init_definitions<'a>() -> Defs<'a> {
-    let mut map: Defs = HashMap::new();
-
-    for line in UNPARSED_DEFS.lines() {
-        let mut parts = line.split('|');
-        let section_name = parts.next().expect("Getting Scenario.txt section");
-        let key_name = parts.next().expect("Getting Scenario.txt key");
-        let value_type = parts
-            .next()
-            .map(|v| ValueType::from_str(v).unwrap())
-            .expect("Getting Scenario.txt value type");
-
-        let translation_key = parts.next().expect("Getting Scenario.txt translation key");
-
-        fn add_def(
-            map: &mut Defs,
-            section_name: &'static str,
-            key_name: &'static str,
-            value_type: ValueType,
-            translation_key: &'static str,
-        ) {
-            let def = Definition {
-                description: translation_key,
-                value_type: value_type.clone(),
-            };
-
-            match map.get_mut(section_name) {
-                Some(sub_map) => {
-                    sub_map.insert(key_name, def);
-                }
-                None => {
-                    let mut sub_map = HashMap::new();
-                    sub_map.insert(key_name, def);
-                    map.insert(section_name, sub_map);
-                }
-            }
-        }
-
-        if section_name == "Player" {
-            add_def(
-                &mut map,
-                "Player1",
-                key_name,
-                value_type.clone(),
-                translation_key,
-            );
-            add_def(
-                &mut map,
-                "Player2",
-                key_name,
-                value_type.clone(),
-                translation_key,
-            );
-            add_def(
-                &mut map,
-                "Player3",
-                key_name,
-                value_type.clone(),
-                translation_key,
-            );
-            add_def(&mut map, "Player4", key_name, value_type, translation_key);
-        } else {
-            add_def(
-                &mut map,
-                section_name,
-                key_name,
-                value_type,
-                translation_key,
-            );
-        }
-    }
-
-    map
 }

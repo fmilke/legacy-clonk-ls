@@ -1,4 +1,7 @@
 {
+  "global": {
+      "undocumented": "Undocumented"
+  },
   "scenario_txt": {
     "head": {
       "icon": "Default icon for the scenario. See the scenario options in the menu system",

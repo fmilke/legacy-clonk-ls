@@ -1,6 +1,11 @@
-use tower_lsp::lsp_types::SemanticToken;
+use super::{
+    asset_handler::AssetHandler,
+    scenario_txt_handler::definition::parse_defs,
+    shared::definition::{collect_semantic_tokens, C4Ini, Definition, Defs, IniDefsProvider},
+    token_types::TokenTypes,
+};
 use lazy_static::lazy_static;
-use super::{asset_handler::AssetHandler, scenario_txt_handler::definition::parse_defs, shared::definition::{collect_semantic_tokens, Definition, Defs, IniDefsProvider}, token_types::TokenTypes};
+use tower_lsp::lsp_types::{CompletionItem, CompletionItemKind, SemanticToken};
 
 const UNPARSED_DEFS: &str = include_str!("./defs.csv");
 
@@ -30,7 +35,54 @@ fn init_definitions() -> Defs<'static> {
 pub struct DefCoreHandler;
 
 impl AssetHandler for DefCoreHandler {
-    fn collect_semantic_tokens(&self, tree: &tree_sitter::Tree, lut: TokenTypes, source: &str) -> Vec<SemanticToken> {
+    fn collect_semantic_tokens(
+        &self,
+        tree: &tree_sitter::Tree,
+        lut: TokenTypes,
+        source: &str,
+    ) -> Vec<SemanticToken> {
         collect_semantic_tokens::<DefCoreDefs>(tree, lut, source)
+    }
+
+    fn get_completions(
+        &self,
+        tree: &tree_sitter::Tree,
+        source: &str,
+        cursor_pos: tower_lsp::lsp_types::Position,
+    ) -> Option<Vec<CompletionItem>> {
+        if let Some(section_map) = DEFS.get("HEAD") {
+            Some(
+                section_map
+                    .keys()
+                    .map(|key| CompletionItem {
+                        sort_text: None,
+                        kind: Some(CompletionItemKind::KEYWORD),
+                        label: key.to_string(),
+                        ..Default::default()
+                    })
+                    .collect(),
+            )
+        } else {
+            None
+        }
+
+        //let mut already_keys = C4Ini::collect_all_keys_within_section(tree, cursor_pos, source);
+        //already_keys.sort();
+        //let section_name = C4Ini::get_section_from_pos(tree, cursor_pos, source);
+
+        //if let Some(section_name) = section_name {
+        //    let map = &*DEFS;
+        //    if let Some(section_map) = map.get(section_name) {
+        //        return Some(section_map
+        //            .keys()
+        //            .filter(|key| already_keys.binary_search(key).is_ok())
+        //            .map(|key| super::asset_handler::CompletionItem {
+        //                label: key.to_string(),
+        //            })
+        //            .collect());
+        //    }
+        //}
+
+        //None
     }
 }

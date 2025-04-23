@@ -9,6 +9,10 @@ Head|Replay|Integer|scenario_txt.head.replay
 Head|Film|Integer|scenario_txt.head.film
 Head|ForcedGfxMode|Integer|scenario_txt.head.forcedGfxMode
 Head|Origin|String|scenario_txt.head.origin
+Head|Loader|String|global.undocumented
+Game|EnableRemoveFlag|Integer|global.undocumented
+Game|StructNeedMaterial|Integer|global.undocumented
+Game|StructNeedEnergy|Integer|global.undocumented
 Game|Rules|IdList|scenario_txt.game.rules
 Game|Goals|IdList|scenario_txt.game.goals
 Game|ValueOverloads|IdList|scenario_txt.game.valueOverloads
@@ -21,6 +25,7 @@ Game|ClearObjects|IdList|scenario_txt.game.clearObjects
 Game|ClearMaterials|MatList|scenario_txt.game.clearMaterials
 Game|BaseFunctionality|Integer|scenario_txt.game.baseFunctionality
 Game|BaseRegenerateEnergyPrice|Integer|scenario_txt.game.baseRegenerateEnergyPrice
+Player|Clonks|Integer|global.undocumented
 Player|Wealth|Integer|scenario_txt.playerX.wealth
 Player|Position|Integer|scenario_txt.playerX.position
 Player|Crew|IdList|scenario_txt.playerX.crew
