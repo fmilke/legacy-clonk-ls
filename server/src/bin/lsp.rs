@@ -392,7 +392,6 @@ async fn main() {
     let mut args = std::env::args().skip(1);
 
     let mut debug_mode = false;
-    let mut log_path: Option<String> = None;
 
     loop {
         if let Some(arg) = args.next() {

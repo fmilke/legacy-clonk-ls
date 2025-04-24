@@ -1,7 +1,10 @@
-use crate::lsp::{
-    doc::Document,
-    highlight_helper::{add_semantic_token, add_semantic_token_at, Context},
-    token_types::TokenTypes,
+use crate::{
+    lang::Translation,
+    lsp::{
+        doc::Document,
+        highlight_helper::{add_semantic_token, add_semantic_token_at, Context},
+        token_types::TokenTypes,
+    },
 };
 use std::{collections::HashMap, str::FromStr};
 use tower_lsp::lsp_types::SemanticToken;
@@ -86,7 +89,7 @@ impl ValueType {
                     ctx,
                     source,
                     ctx.token_types.number,
-                    ','
+                    ',',
                 );
             }
             ValueType::FlagList => {
@@ -95,7 +98,7 @@ impl ValueType {
                     ctx,
                     source,
                     ctx.token_types.number,
-                    '|'
+                    '|',
                 );
             }
             ValueType::Id => {
@@ -275,7 +278,11 @@ struct C4KeysIter<'a> {
 }
 
 impl<'a> C4KeysIter<'a> {
-    pub fn from_document(doc: &'a tree_sitter::Tree, pos: tower_lsp::lsp_types::Position, source: &'a str) -> Self {
+    pub fn from_document(
+        doc: &'a tree_sitter::Tree,
+        pos: tower_lsp::lsp_types::Position,
+        source: &'a str,
+    ) -> Self {
         let point = Document::point_to_pos(pos);
         C4KeysIter {
             doc,
@@ -297,8 +304,7 @@ impl<'a> Iterator for C4KeysIter<'a> {
             match node.kind() {
                 NODE_KIND_PROPERTY => {
                     if let Some(key) = node.child(0) {
-                        if let Ok(concrete_key_name) = key.utf8_text(self.source.as_bytes())
-                        {
+                        if let Ok(concrete_key_name) = key.utf8_text(self.source.as_bytes()) {
                             if let Some(last_section_name) = self.last_section_name {
                                 return Some((last_section_name, concrete_key_name));
                             }
@@ -331,7 +337,6 @@ impl<'a> Iterator for C4KeysIter<'a> {
 }
 
 impl C4Ini {
-
     pub fn collect_all_keys_within_section<'a>(
         doc: &'a tree_sitter::Tree,
         pos: tower_lsp::lsp_types::Position,
@@ -361,8 +366,7 @@ impl C4Ini {
                     if let Some(first_child) = node.child(0) {
                         if first_child.kind() == NODE_KIND_SECTION_NAME {
                             if let Some(name) = first_child.child(1) {
-                                if let Ok(concrete_section_name) =
-                                    name.utf8_text(source.as_bytes())
+                                if let Ok(concrete_section_name) = name.utf8_text(source.as_bytes())
                                 {
                                     return Some(concrete_section_name);
                                 }
@@ -380,9 +384,59 @@ impl C4Ini {
 
         None
     }
-}
 
-pub trait C4IniVisitor {
-    fn on_section_name(section_name: &str);
-    fn on_key_name(key_name: &str);
+    pub fn get_hover_text<T: IniDefsProvider>(
+        doc: &Document,
+        pos: tower_lsp::lsp_types::Position,
+    ) -> Option<String> {
+        let mut cursor = doc.tree.walk();
+        let point = Document::point_to_pos(pos);
+        let mut section_name: Option<&str> = None;
+
+        loop {
+            let node = cursor.node();
+
+            match node.kind() {
+                NODE_KIND_PROPERTY => {
+                    if let Some(key) = node.child(0) {
+                        // TODO: check if hover is on this child
+
+                        let text = match key.utf8_text(doc.source.as_bytes()) {
+                            Ok(s) => s,
+                            _ => return None,
+                        };
+
+                        if let Some(ref section_name) = section_name {
+                            tracing::info!("Got section {}", section_name);
+                            if let Some(def) = T::get_def(section_name, text) {
+                                if let Some(s) = Translation::get_translation(def.description) {
+                                    return Some(s.to_owned());
+                                }
+                            }
+                        }
+                    }
+                }
+                NODE_KIND_SECTION => {
+                    if let Some(first_child) = node.child(0) {
+                        if first_child.kind() == NODE_KIND_SECTION_NAME {
+                            if let Some(name) = first_child.child(1) {
+                                if let Ok(concrete_section_name) =
+                                    name.utf8_text(doc.source.as_bytes())
+                                {
+                                    section_name = Some(concrete_section_name);
+                                }
+                            }
+                        }
+                    }
+                }
+                _ => {}
+            }
+
+            if cursor.goto_first_child_for_point(point).is_none() {
+                break;
+            }
+        }
+
+        None
+    }
 }

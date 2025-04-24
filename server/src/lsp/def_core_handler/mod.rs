@@ -1,7 +1,7 @@
 use super::{
     asset_handler::AssetHandler,
     scenario_txt_handler::definition::parse_defs,
-    shared::definition::{collect_semantic_tokens, Definition, Defs, IniDefsProvider},
+    shared::definition::{collect_semantic_tokens, C4Ini, Definition, Defs, IniDefsProvider},
     token_types::TokenTypes,
 };
 use lazy_static::lazy_static;
@@ -84,5 +84,9 @@ impl AssetHandler for DefCoreHandler {
         //}
 
         //None
+    }
+
+    fn get_hover_text(&self, doc: &super::doc::Document, pos: tower_lsp::lsp_types::Position) -> Option<String> {
+        C4Ini::get_hover_text::<DefCoreDefs>(doc, pos)
     }
 }
