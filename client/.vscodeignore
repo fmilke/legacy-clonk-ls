@@ -1,6 +1,6 @@
 **/*
 !client/out/extension.js
-!client/out/legacy-clonk-ls
-!client/out/legacy-clonk-ls.exe
+!client/out/lsp
+!client/out/lsp.exe
 !icon.png
 !icons/
