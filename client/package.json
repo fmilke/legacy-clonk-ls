@@ -51,7 +51,7 @@
 				},
 				"legacy-clonk-ext.pathToC4gExecutable": {
 					"type": "string",
-					"description": "Path to C4Group Executable, which is used to pack/unpack .c4* files"
+					"description": "Path to c4group executable, which is used to pack/unpack .c4* files"
 				},
 				"legacy-clonk-ext.pathToGameExecutable": {
 					"type": "string",
