@@ -4,9 +4,13 @@
 set -x xtrace
 set -e
 
-# Step 1: build grammer
+# Step 1: build grammers
 
 cd tree-sitter-c4script
+npm run build
+cd ..
+
+cd tree-sitter-c4ini
 npm run build
 cd ..
 
