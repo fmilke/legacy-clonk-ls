@@ -115,8 +115,12 @@ function configureIdSelectCommand(context: ExtensionContext, outputChannel: Outp
 				});
 			}).then(item => {
 				if (typeof item === 'object') {
-					return window.activeTextEditor.edit(b => {
-						b.replace(window.activeTextEditor.selection, item.label);
+					const editor = window.activeTextEditor;
+
+					if (!editor) return;
+
+					return editor.edit(b => {
+						b.replace(editor.selection, item.label);
 					});
 				}
 			});
