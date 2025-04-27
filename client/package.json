@@ -73,6 +73,11 @@
 				"title": "Unpack"
 			},
 			{
+				"command": "legacy-clonk-ext.pasteId",
+				"category": "LegacyClonk",
+				"title": "Paste Object ID"
+			},
+			{
 				"command": "legacy-clonk-ext.packC4g",
 				"title": "Pack"
 			},

@@ -2,6 +2,9 @@ use dashmap::DashMap;
 use legacy_clonk_ls::lang::Translation;
 use legacy_clonk_ls::lsp::doc::{DocType, Document};
 use legacy_clonk_ls::lsp::token_types::TokenTypes;
+use legacy_clonk_ls::workspace::{IdInfo, Workspace};
+use serde::{Deserialize, Serialize};
+use serde_json::json;
 use std::fs::OpenOptions;
 use std::sync::RwLock;
 use tokio;
@@ -19,7 +22,6 @@ impl OwnSemanticTokenType {
     const ID: SemanticTokenType = SemanticTokenType::new("id");
     const BOOL: SemanticTokenType = SemanticTokenType::new("bool");
 }
-
 const NEGOTIATE_TOKENT_TYPES: bool = false;
 const LOG_TREE_UPDATE_POSITIONS: bool = false;
 
@@ -27,6 +29,7 @@ struct Backend {
     client: Client,
     token_types: RwLock<TokenTypes>,
     documents: DashMap<Url, Document>,
+    workspace: RwLock<Workspace>,
 }
 
 impl Backend {
@@ -211,6 +214,17 @@ impl Backend {
     fn drop_document(&self, uri: &Url) {
         self.documents.remove(uri);
     }
+
+    async fn request_ids(&self) -> Result<serde_json::Value> {
+        let ws = self.workspace.read();
+        if let Ok(ws) = ws {
+            let ids = ws.get_ids();
+            Ok(json!(ids))
+        } else {
+            let v: Vec<IdInfo> = vec![];
+            Ok(json!(v))
+        }
+    }
 }
 
 #[tower_lsp::async_trait]
@@ -379,11 +393,15 @@ async fn start_language_server() {
     let stdin = tokio::io::stdin();
     let stdout = tokio::io::stdout();
 
-    let (service, socket) = LspService::new(|client| Backend {
+    let (service, socket) = LspService::build(|client| Backend {
         token_types: RwLock::new(TokenTypes::default()),
         client,
         documents: DashMap::new(),
-    });
+        workspace: RwLock::new(Workspace::new()),
+    })
+    .custom_method("x-legacy-clonk/getAllIds", Backend::request_ids)
+    .finish();
+
     Server::new(stdin, stdout, socket).serve(service).await;
 }
 

@@ -1,5 +1,5 @@
 import * as path from 'path';
-import { commands, ExtensionContext, extensions, OutputChannel, window } from 'vscode';
+import { commands, ExtensionContext, extensions, OutputChannel, QuickPickItem, window } from 'vscode';
 
 import {
 	LanguageClient,
@@ -15,7 +15,12 @@ let client: LanguageClient;
 
 export function activate(context: ExtensionContext) {
 	const outputChannel = window.createOutputChannel('Legacy Clonk');
-	bindUi(context, outputChannel);
+	configureTreeViewCommands(context, outputChannel);
+	configureIdSelectCommand(context, outputChannel);
+	configureAndStartLanguageServer(context);
+}
+
+function configureAndStartLanguageServer(context: ExtensionContext) {
 
 	const executableName = process.platform === 'win32' ? 'lsp.exe' : 'lsp';
 
@@ -26,7 +31,7 @@ export function activate(context: ExtensionContext) {
 	const pathToBinInDebug = context.asAbsolutePath(
 		path.join('..', 'server', 'target', 'debug', executableName)
 	);
-	
+
 	const serverOptions: ServerOptions = {
 		run: {
 			command: pathToBin,
@@ -47,7 +52,7 @@ export function activate(context: ExtensionContext) {
 		}, {
 			scheme: 'file',
 			language: 'c4ini',
-        }],
+		}],
 	};
 
 	client = new LanguageClient(
@@ -61,7 +66,7 @@ export function activate(context: ExtensionContext) {
 	client.info("Client started");
 }
 
-function bindUi(context: ExtensionContext, outputChannel: OutputChannel) {
+function configureTreeViewCommands(context: ExtensionContext, outputChannel: OutputChannel) {
 	const c4group = new C4Group(outputChannel);
 	const runner = new ScenarioRunner();
 
@@ -70,13 +75,51 @@ function bindUi(context: ExtensionContext, outputChannel: OutputChannel) {
 			.then(_ => commands.executeCommand("workbench.files.action.refreshFilesExplorer"));
 	}));
 
-	context.subscriptions.push(commands.registerCommand(CONFIG_NAME + '.packC4g', ({ fsPath, ...args }) => {
+	context.subscriptions.push(commands.registerCommand(CONFIG_NAME + '.packC4g', ({ fsPath }) => {
 		c4group.pack(fsPath)
 			.then(_ => commands.executeCommand("workbench.files.action.refreshFilesExplorer"));
 	}));
 
 	context.subscriptions.push(commands.registerCommand(CONFIG_NAME + '.runScenarioInEditor', ({ fsPath }) => {
 		runner.run(fsPath, outputChannel);
+	}));
+}
+
+function configureIdSelectCommand(context: ExtensionContext, outputChannel: OutputChannel) {
+	context.subscriptions.push(commands.registerCommand(CONFIG_NAME + '.pasteId', () => {
+
+		client.sendRequest('x-legacy-clonk/getAllIds')
+			.then(response => {
+
+				if (!Array.isArray(response)) {
+					outputChannel.appendLine(`Value returned from language server was expected to be an array but was ${typeof response}`);
+					return;
+				}
+
+				outputChannel.appendLine(`x-legacy-clonk/getAllIds returned ${response.length} results`);
+
+				const items: QuickPickItem[] = [];
+
+				// Validate?
+				for (const v of response) {
+					items.push({
+						label: v.id,
+						detail: v.tlc,
+						description: v.name,
+					});
+				}
+
+				return window.showQuickPick(items, {
+					title: 'this is title',
+					matchOnDescription: true,
+				});
+			}).then(item => {
+				if (typeof item === 'object') {
+					return window.activeTextEditor.edit(b => {
+						b.replace(window.activeTextEditor.selection, item.label);
+					});
+				}
+			});
 	}));
 }
 
