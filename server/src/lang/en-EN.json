@@ -1,6 +1,31 @@
 {
   "global": {
-      "undocumented": "Undocumented"
+    "undocumented": "Undocumented"
+  },
+  "actmap": {
+    "name": "Name of the activity. See SetAction(). Max 30 characters.",
+    "procedure": "Internal standard procedure. See Procedures. Max 30 characters.",
+    "directions": "Number of animation directions. Animation directions are arranged vertically in Graphics.png.",
+    "flipDir": "If nonzero, this value specifies the first animation phase that is produced by mirroring one of the previous animation directions. If this value is 1, graphics of direction 1 (DIR_Right) will be drawn as a horizontally mirrored graphics of direction 0 (DIR_Left) (see clonks). If it is 7, any directions n >= 7 will be drawn using the mirrored graphics of directions 6 - n, i.e. higher direction values will be drawn using the mirrored graphics in reverse orders (cf. banner in the knights pack).",
+    "length": "Number of animation phases for this activity (arranged horizontally in Graphics.png)",
+    "reverse": "0 or 1. If 1, the animation phases will be shown in reverse order.",
+    "delay": "Time difference in frames (ticks) between two animation phases.",
+    "attach": "Attachment to surfaces: CNAT Value, e.g. value 8 if the object should attach to the floor like a walking clonk does; or 4 for attachment to the ceiling like a hangling clonk. Only evaluated if the procedure is NONE.",
+    "facet": "Animation graphics: Target rectangle from Graphics.png relative to upper left corner of unrotated object shape.",
+    "facetBase": "0 or 1. If 1, the default facet (i.e., the facet shown if the object has no action) will be drawn behind the action facet.",
+    "facetTopFace": "0 or 1. If 1, the TopFace (see DefCore.txt) will be drawn using the animated facet.",
+    "facetTargetStretch": "0 or 1. If 1, the graphics will be stretched down towards the upper border of the ActionTarget. Used e.g. for the elevator line.",
+    "nextAction": "Next action being set after the current one has reached its end. Max 30 characters.",
+    "noOtherAction": "0 or 1. If 1, no other action can be set after this one (used e.g. for death or destruction). Max 30 characters.",
+    "startCall": "Object script function which is called when the activity is started. Max 30 characters.",
+    "endCall": "Called when an activity reaches the end of its animation. Max 30 characters.",
+    "phaseCall": "Called whenever the animation phase changes. Max 30 characters.",
+    "abortCall": "Called if an activity is being replaced by another before its regular end; i.e. not by a transition through NextAction. Max 30 characters.",
+    "inLiquidAction": "Action to be set if the object plunges into water. Max 30 characters.",
+    "sound": "Permanent sound being played during this action. Max 30 characters.",
+    "objectDisabled": "0 or 1. Restricted control of the object during this action.",
+    "digFree": "Area that is dug free during this action. If 1, the area covered by the object shape is freed (like the elevator case); otherwise, the value is taken as the radius of a circular area (like a digging Clonk).",
+    "energyUsage": "Energy required for this action. Normal machines should use about 500."
   },
   "scenario_txt": {
     "head": {

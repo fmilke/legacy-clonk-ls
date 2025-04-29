@@ -110,6 +110,7 @@
 				],
 				"filenames": [
 					"Scenario.txt",
+					"ActMap.txt",
 					"DefCore.txt"
 				],
 				"firstLine": "/(Scenario)/",

@@ -1,6 +1,5 @@
 use super::{
-    asset_handler::AssetHandler, def_core_handler::DefCoreHandler,
-    scenario_txt_handler::ScenarioTxtHandler, script_handler::ScriptHandler,
+    act_map_handler::ActMapHandler, asset_handler::AssetHandler, def_core_handler::DefCoreHandler, scenario_txt_handler::ScenarioTxtHandler, script_handler::ScriptHandler
 };
 use crate::core::kind::NODE_KIND_FN_DEF;
 use anyhow::{anyhow, Context};
@@ -110,12 +109,14 @@ pub enum DocType {
     Script,
     ScenarioTxt,
     DefCore,
+    ActMap,
 }
 
 const F_EXT_SCRIPT: &str = "c";
 const F_EXT_TXT: &str = "txt";
 const F_NAME_SCENARIO: &str = "Scenario.txt";
 const F_NAME_DEFCORE: &str = "DefCore.txt";
+const F_NAME_ACTMAP: &str = "ActMap.txt";
 
 impl DocType {
     pub fn from_uri(uri: &Url) -> anyhow::Result<Self> {
@@ -135,6 +136,7 @@ impl DocType {
             F_EXT_TXT => match file_name {
                 F_NAME_SCENARIO => Ok(DocType::ScenarioTxt),
                 F_NAME_DEFCORE => Ok(DocType::DefCore),
+                F_NAME_ACTMAP => Ok(DocType::ActMap),
                 _ => Err(anyhow!(
                     "File extension '.{}' was recognized, but file name is unknown: {}",
                     &ext,
@@ -150,6 +152,7 @@ impl DocType {
             DocType::Script => Box::new(ScriptHandler::default()),
             DocType::ScenarioTxt => Box::new(ScenarioTxtHandler::default()),
             DocType::DefCore => Box::new(DefCoreHandler::default()),
+            DocType::ActMap => Box::new(ActMapHandler::default()),
         }
     }
 
@@ -158,6 +161,7 @@ impl DocType {
             DocType::Script => tree_sitter_c4script::language(),
             DocType::ScenarioTxt => tree_sitter_c4ini::language(),
             DocType::DefCore => tree_sitter_c4ini::language(),
+            DocType::ActMap => tree_sitter_c4ini::language(),
         }
     }
 

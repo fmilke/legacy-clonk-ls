@@ -1,6 +1,31 @@
 {
   "global": {
-      "undocumented": "Undokumentiert"
+    "undocumented": "Undokumentiert"
+  },
+  "actmap": {
+    "name": "Name der Aktivität. Siehe SetAction(). Max 30 Zeichen.",
+    "procedure": "Interne Standardprozedur. Siehe Prozeduren. Max 30 Zeichen.",
+    "directions": "Anzahl der Animationsrichtungen. Animationreihen vertikal in Graphics.png.",
+    "flipDir": "Wenn ungleich 0, gibt dieser Wert die erste Animationsrichtung an, die durch Spiegelung einer davor liegenden Animationsrichtung gezeichnet wird. So wird bei Wert 1 für die Richtung 1 (rechts) die gespiegelte Grafik der Richtung 0 (links) verwendet (siehe Clonks). Bei Wert 7 wird für Richtungen >= 7 die gespiegelte Grafik der Richtung 6 - n verwendet, d.h. bei höheren Richtungsnummern wird wieder rückwärts nach oben gezählt (siehe Banner im Ritterpack).",
+    "length": "Anzahl der Animationsphasen dieser Aktivität (horizontal in Graphics.png).",
+    "reverse": "0 oder 1. Bei Wert 1 werden die Animationsphasen rückwärts angezeigt.",
+    "delay": "Wartezeit in Frames (Ticks) zwischen zwei Animationsphasen.",
+    "attach": "Festhalten an Oberflächen: CNAT-Wert, also z.B. Wert 8 für Boden. Wird nur ausgewertet, wenn Procedure NONE ist.",
+    "facet": "Animationsgrafik: Zielrechteck aus Graphics.png auf Objektposition.",
+    "facetBase": "0 oder 1. Bei Wert 1 wird Facet mit der Standardobjektgrafik unterlegt.",
+    "facetTopFace": "0 oder 1. Bei 1 wird das TopFace (siehe DefCore.txt) aus der animierten Facet verwendet.",
+    "facetTargetStretch": "0 oder 1. Bei 1 wird die Grafik vertikal bis zur oberen Kante des ActionTarget gestretcht.",
+    "nextAction": "Nächste Aktivität nach Ablauf der Animationsphasen. Max 30 Zeichen.",
+    "noOtherAction": "0 oder 1. Bei 1 ist keine Aktivität nach dieser möglich (z.B. Tod, Zerstörung). Max 30 Zeichen.",
+    "startCall": "Objektscriptfunktion, die beim Start der Aktivität aufgerufen wird. Max 30 Zeichen.",
+    "endCall": "Wird am Ende der Aktivität aufgerufen. Max 30 Zeichen.",
+    "phaseCall": "Wird bei jedem Phasenschritt aufgerufen. Max 30 Zeichen.",
+    "abortCall": "Wird aufgerufen, wenn die Aktivität vor ihrem Ende durch eine andere ersetzt wird. Max 30 Zeichen.",
+    "inLiquidAction": "Auszuführende Aktion, wenn das Objekt in Flüssigkeiten eintaucht. Max 30 Zeichen.",
+    "sound": "Dauerhaftes Geräusch dieser Aktivität. Max 30 Zeichen.",
+    "objectDisabled": "0 oder 1. Eingeschränkte Fähigkeit des Objekts während dieser Aktion.",
+    "digFree": "Freigraben während dieser Aktion. Objektrechteck 1, sonst Kreisradius.",
+    "energyUsage": "Nötige Energie für diese Aktion. Maschinen 500."
   },
   "scenario_txt": {
     "head": {
