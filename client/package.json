@@ -111,6 +111,7 @@
 				"filenames": [
 					"Scenario.txt",
 					"ActMap.txt",
+					"Particle.txt",
 					"DefCore.txt"
 				],
 				"firstLine": "/(Scenario)/",

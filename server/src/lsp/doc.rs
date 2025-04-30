@@ -1,9 +1,8 @@
 use super::{
-    act_map_handler::ActMapHandler, asset_handler::AssetHandler, def_core_handler::DefCoreHandler, scenario_txt_handler::ScenarioTxtHandler, script_handler::ScriptHandler
+    act_map_handler::ActMapHandler, asset_handler::AssetHandler, def_core_handler::DefCoreHandler, particle_handler::ParticleHandler, scenario_txt_handler::ScenarioTxtHandler, script_handler::ScriptHandler
 };
 use crate::core::kind::NODE_KIND_FN_DEF;
-use anyhow::{anyhow, Context};
-use tower_lsp::lsp_types::{Position, Url};
+use anyhow::{anyhow, Context}; use tower_lsp::lsp_types::{Position, Url};
 use tracing::info;
 use tree_sitter::{Language, Point, Tree};
 
@@ -110,6 +109,7 @@ pub enum DocType {
     ScenarioTxt,
     DefCore,
     ActMap,
+    Particle,
 }
 
 const F_EXT_SCRIPT: &str = "c";
@@ -117,6 +117,7 @@ const F_EXT_TXT: &str = "txt";
 const F_NAME_SCENARIO: &str = "Scenario.txt";
 const F_NAME_DEFCORE: &str = "DefCore.txt";
 const F_NAME_ACTMAP: &str = "ActMap.txt";
+const F_NAME_PARTICLE: &str = "Particle.txt";
 
 impl DocType {
     pub fn from_uri(uri: &Url) -> anyhow::Result<Self> {
@@ -137,6 +138,7 @@ impl DocType {
                 F_NAME_SCENARIO => Ok(DocType::ScenarioTxt),
                 F_NAME_DEFCORE => Ok(DocType::DefCore),
                 F_NAME_ACTMAP => Ok(DocType::ActMap),
+                F_NAME_PARTICLE => Ok(DocType::Particle),
                 _ => Err(anyhow!(
                     "File extension '.{}' was recognized, but file name is unknown: {}",
                     &ext,
@@ -153,6 +155,7 @@ impl DocType {
             DocType::ScenarioTxt => Box::new(ScenarioTxtHandler::default()),
             DocType::DefCore => Box::new(DefCoreHandler::default()),
             DocType::ActMap => Box::new(ActMapHandler::default()),
+            DocType::Particle => Box::new(ParticleHandler::default()),
         }
     }
 
@@ -162,6 +165,7 @@ impl DocType {
             DocType::ScenarioTxt => tree_sitter_c4ini::language(),
             DocType::DefCore => tree_sitter_c4ini::language(),
             DocType::ActMap => tree_sitter_c4ini::language(),
+            DocType::Particle => tree_sitter_c4ini::language(),
         }
     }
 

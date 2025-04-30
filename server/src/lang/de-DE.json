@@ -230,5 +230,31 @@
       "corrosionResist": "0 oder 1. Legt fest, ob das Objekt Säure widersteht.",
       "breatheWater": "0 Objekt atmet Luft, 1 Objekt atmet Wasser."
     }
+  },
+  "particle": {
+    "name": "Name des Partikeltyps. Dieser Name dient zugleich zur Referenzierung in Scripten. Für Mehrsprachigkeit im Frontend sollte die Names.txt benutzt werden. Max 30 Zeichen.",
+    "maxCount": "Maximale Instanzzahl für diesen Partikeltyp. Siehe Mengenkontrolle.",
+    "minLifetime": "Nur für Rauchpartikel: Untere Grenze für die Lebensdauer, die nach Zufall zwischen MinLifetime und MaxLifetime gesetzt wird.",
+    "maxLifetime": "Nur für Rauchpartikel: Obere Grenze für die Lebensdauer, die nach Zufall zwischen MinLifetime und MaxLifetime gesetzt wird.",
+    "initFn": "Identifikator für die Funktion, die zur Initialisierung des Partikels verwendet wird. Für gültige Funktionen siehe Sektion Partikelfunktionen. Max 30 Zeichen.",
+    "execFn": "Identifikator für die Funktion, die jedes Frame zur Ausführung des Partikels verwendet wird. Für gültige Funktionen siehe Sektion Partikelfunktionen. Max 30 Zeichen.",
+    "drawFn": "Identifikator für die Funktion, die zum Zeichnen des Partikels verwendet wird. Für gültige Funktionen siehe Sektion Zeichenfunktionen. Max 30 Zeichen.",
+    "collisionFn": "Identifikator für die Funktion, die Kollision des Partikels mit der Landschaft aufgerufen wird. Siehe auch Kollisionsabfrage. Max 30 Zeichen.",
+    "face": "Zielrechteck für die Grafik in der Graphics.png. Siehe Partikelgrafik.",
+    "yOff": "Obere Grenze für diesen Partikeltyp. An dieser Stelle werden die Partikel abgeschnitten, als wäre die Landschaft schon dort zu Ende. Nur StdExec.",
+    "delay": "Wartezeit zwischen den Animationsphasen. Bei Delay=0 wird eine Zufallsphase dauerhaft benutzt.",
+    "repeats": "Anzahl der Animationswiederholungen, bis sich das Partikel zerstört.",
+    "reverse": "0 oder 1. Bei 1 wird jede zweite Animation rückwärts abgespielt.",
+    "fadeOutLen": "Falls angegeben, wird diese Anzahl der Animationsphasen von hinten abgenommen und für eine Endanimation reserviert, die nach Repeats Abläufen der Standardanimation ausgeführt wird.",
+    "fadeOutDelay": "Wartezeit zwischen zwei in FadeOutLen angegebenen Animationsphasen.",
+    "rByV": "0 bis 3. 0 für keine Partikel-Drehung. Bei 1 dreht sich das Partikel nach Bewegungsrichtung; vorne ist dabei oben. Bei 2 dienen die Geschwindigkeitparameter nur der Ausrichtung; das Partikel bewegt sich nicht. Bei 3 dreht sich das Partikel zufällig (ab 4.9.8.0).",
+    "gravityAcc": "Gravitationsauswirkung. Bei 0 wird das Partikel gar nicht von der Gravitation beschleunigt, bei 100 normal. Negative Werte sind ebenfalls möglich.",
+    "windDrift": "Abtrieb durch Wind. Wie die gleichnamige Materialeigenschaft. Ab CR 4.9.8.4.",
+    "vertexCount": "0 oder 1. Bei 1 wird eine Kollisionsabfrage durchgeführt.",
+    "vertexY": "Prozentualer Wert fürs Y-Offset des Abfragepunktes für Kollisionen mit der Landschaft. Siehe auch Kollisionsabfrage.",
+    "additive": "0 oder 1. Bei 1 wird das Partikel additiv gezeichnet.",
+    "alphaFade": "0 bis 40. Ausfaden pro Frame. Wenn das Partikel vollends ausgefadet ist, verschwindet es.",
+    "parallaxity": "Parallaxität in X- und in Y-Richtung. 0 ist fest mit dem Bildschirm; 100 ist Standard (fest mit der Landschaft).",
+    "attach": "0 oder 1. Bei 1 bewegt sich das Partikel bei angegebenem Zielobjekt relativ zu diesem. Ab 4.95.4."
   }
 }

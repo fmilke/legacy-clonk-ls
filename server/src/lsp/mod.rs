@@ -6,4 +6,5 @@ pub mod act_map_handler;
 pub mod script_handler;
 pub mod highlight_helper;
 pub mod def_core_handler;
+pub mod particle_handler;
 pub mod shared;
