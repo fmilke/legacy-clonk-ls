@@ -126,7 +126,6 @@
 				"filenames": [
 					"ActMap.txt"
 				],
-				"firstLine": "/(Scenario)/",
 				"icon": {
 					"light": "./icons/ActMap.svg",
 					"dark": "./icons/ActMap.svg"
@@ -141,7 +140,6 @@
 				"filenames": [
 					"DefCore.txt"
 				],
-				"firstLine": "/(Scenario)/",
 				"icon": {
 					"light": "./icons/DefCore.svg",
 					"dark": "./icons/DefCore.svg"
@@ -156,7 +154,6 @@
 				"filenames": [
 					"Particle.txt"
 				],
-				"firstLine": "/(Scenario)/",
 				"icon": {
 					"light": "./icons/Particle.svg",
 					"dark": "./icons/Particle.svg"
