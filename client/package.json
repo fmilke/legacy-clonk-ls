@@ -104,36 +104,72 @@
 		},
 		"languages": [
 			{
-				"id": "c4ini",
+				"id": "c4ini-Scenario",
 				"aliases": [
 					"C4Ini"
 				],
 				"filenames": [
-					"Scenario.txt",
-					"ActMap.txt",
-					"Particle.txt",
+					"Scenario.txt"
+				],
+				"icon": {
+					"light": "./icons/Scenario.svg",
+					"dark": "./icons/Scenario.svg"
+				},
+				"firstLine": "/(Scenario)/",
+				"configuration": "./c4ini-language-configuration.json"
+			},
+			{
+				"id": "c4ini-ActMap",
+				"aliases": [
+					"C4Ini-ActMap"
+				],
+				"filenames": [
+					"ActMap.txt"
+				],
+				"icon": {
+					"light": "./icons/ActMap.svg",
+					"dark": "./icons/ActMap.svg"
+				},
+				"configuration": "./c4ini-language-configuration.json"
+			},
+			{
+				"id": "c4ini-DefCore",
+				"aliases": [
+					"C4Ini-DefCore"
+				],
+				"filenames": [
 					"DefCore.txt"
 				],
-				"firstLine": "/(Scenario)/",
 				"icon": {
-					"light": "./icons/c4script-light.png",
-					"dark": "./icons/c4script-dark.png"
+					"light": "./icons/DefCore.svg",
+					"dark": "./icons/DefCore.svg"
+				},
+				"configuration": "./c4ini-language-configuration.json"
+			},
+			{
+				"id": "c4ini-Particle",
+				"aliases": [
+					"C4Ini-Particle"
+				],
+				"filenames": [
+					"Particle.txt"
+				],
+				"icon": {
+					"light": "./icons/Particle.svg",
+					"dark": "./icons/Particle.svg"
 				},
 				"configuration": "./c4ini-language-configuration.json"
 			},
 			{
 				"id": "c4script",
-				"extensions": [
-					".c"
-				],
 				"aliases": [
 					"C4script"
 				],
-				"filenames": [],
+				"filenames": ["Script.c"],
 				"firstLine": "/(#include|#appendto|#strict)/",
 				"icon": {
-					"light": "./icons/c4script-light.png",
-					"dark": "./icons/c4script-dark.png"
+					"light": "./icons/c4.svg",
+					"dark": "./icons/c4.svg"
 				},
 				"configuration": "./c4script-language-configuration.json"
 			}
