@@ -162,13 +162,10 @@
 			},
 			{
 				"id": "c4script",
-				"extensions": [
-					".c"
-				],
 				"aliases": [
 					"C4script"
 				],
-				"filenames": [],
+				"filenames": ["Script.c"],
 				"firstLine": "/(#include|#appendto|#strict)/",
 				"icon": {
 					"light": "./icons/c4.svg",
